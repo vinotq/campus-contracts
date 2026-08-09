@@ -1,0 +1,28 @@
+[project]
+name = "campus-contracts"
+version = "1.0.0"
+description = "Контракт обмена между АСПиРС, Шлюзом и ЛКП: конверт, схемы сообщений, словари значений"
+requires-python = ">=3.12"
+dependencies = ["pydantic>=2.6"]
+
+[project.urls]
+Documentation = "https://github.com/vinotq/campus-contracts#readme"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["campus_contracts*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+# Сообщения об ошибках русские и длинные, перенос их только портит.
+ignore = ["E501"]

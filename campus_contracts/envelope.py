@@ -1,0 +1,59 @@
+"""Конверт и общие ограничения обмена.
+
+Один конверт на оба направления и на все три системы. Раньше их было три
+разных, и расхождение в одном необязательном поле останавливало весь обмен: у
+принимающей стороны `extra="forbid"`, и лишний ключ отбрасывает сообщение
+целиком, до того как дело дойдёт до типа и смысла.
+"""
+
+from datetime import datetime
+
+from pydantic import BaseModel, ConfigDict, Field
+
+#: Версия схемы. Разные версии живут параллельно, старая выключается решением,
+#: а не молча. Поднимается только когда у прежней есть живые читатели.
+SCHEMA_VERSION = 1
+
+#: 256 КБ на сообщение и 100 на пачку. Числа не про производительность, а про
+#: то, чтобы одно кривое сообщение не съело память принимающей стороне.
+MAX_MESSAGE_BYTES = 256 * 1024
+MAX_BATCH = 100
+
+
+class Strict(BaseModel):
+    """Базовая модель контракта.
+
+    `extra="forbid"` не строгость ради строгости: молча проглоченное поле
+    означает, что сторона говорит на другой версии схемы, и никто этого не
+    заметит.
+    """
+
+    model_config = ConfigDict(extra="forbid")
+
+
+class Audience(Strict):
+    """Кому адресована публикация. Пустые списки — «всем»."""
+
+    buildings: list[str] = Field(default_factory=list, max_length=64)
+    courses: list[int] = Field(default_factory=list, max_length=16)
+    groups: list[str] = Field(default_factory=list, max_length=256)
+
+
+class Envelope(Strict):
+    """Одно сообщение контракта.
+
+    `audience` заполняет только АСПиРС и только для публикаций: адресация живёт
+    в конверте, чтобы Шлюзу не приходилось разбирать полезную нагрузку ради
+    маршрутизации. Принимать поле обязаны все, даже кто его не читает.
+    """
+
+    id: str = Field(min_length=1, max_length=64)
+    type: str = Field(min_length=3, max_length=64)
+    version: int = Field(ge=1, le=99)
+    occurred_at: datetime
+    audience: dict = Field(default_factory=dict)
+    payload: dict = Field(default_factory=dict)
+
+
+class Batch(Strict):
+    messages: list[Envelope] = Field(max_length=MAX_BATCH)
