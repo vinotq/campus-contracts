@@ -12,7 +12,7 @@
     if is_enforced(message_type):
         validate(Direction.DOWNSTREAM, message_type, payload)
 
-Разбор человеческой части — в `campus/EXCHANGE-CONTRACT.md`.
+Разбор человеческой части — в `CONTRACT.md` этого же репозитория.
 """
 
 from enum import StrEnum
