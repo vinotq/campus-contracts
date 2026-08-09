@@ -1,6 +1,6 @@
 [project]
 name = "campus-contracts"
-version = "1.0.0"
+version = "1.0.1"
 description = "Контракт обмена между АСПиРС, Шлюзом и ЛКП: конверт, схемы сообщений, словари значений"
 requires-python = ">=3.12"
 dependencies = ["pydantic>=2.6"]
