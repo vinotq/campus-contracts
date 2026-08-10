@@ -131,12 +131,6 @@ class ApplicationStatusChanged(Strict):
 # ── Бельё ────────────────────────────────────────────────────────────────────
 
 
-class LinenEntitlementChanged(Strict):
-    aspirs_ref: str = Field(max_length=64)
-    period_start: date
-    entitled: bool
-
-
 class LinenGranted(Strict):
     aspirs_ref: str = Field(max_length=64)
     period_start: date
@@ -198,7 +192,6 @@ SCHEMAS = {
     "ticket.status_changed": TicketStatusChanged,
     "leave.status_changed": ApplicationStatusChanged,
     "pass.status_changed": ApplicationStatusChanged,
-    "linen.entitlement_changed": LinenEntitlementChanged,
     "linen.granted": LinenGranted,
     "linen.debt_created": LinenDebtCreated,
     "account.invited": AccountInvited,

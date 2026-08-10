@@ -14,7 +14,7 @@ DOWNSTREAM = {
         "title": "Субботник во дворе",
         "body_md": "Собираемся в субботу в 11 у восьмого корпуса.",
         "rubric": "Двор",
-        "author_label": "Комендатура корпуса 8",
+        "author_label": "Воспитатели корпуса 8",
         "is_urgent": False,
         "published_at": "2026-08-04T12:00:00+03:00",
         "audience": {"buildings": ["8", "9"], "courses": [1, 2], "groups": []},
@@ -76,17 +76,12 @@ DOWNSTREAM = {
         "status": "declined",
         "decline_reason": "Даты выходят за срок проживания",
     },
-    "linen.entitlement_changed": {
-        "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
-        "period_start": "2026-08-03",
-        "entitled": True,
-    },
     "linen.granted": {
         "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
         "period_start": "2026-08-03",
         "granted_at": "2026-08-05T10:15:00+03:00",
         "method": "qr",
-        "granted_by": "Комендатура корпуса 12",
+        "granted_by": "Кастелянша корпуса 12",
     },
     "linen.debt_created": {
         "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
@@ -100,7 +95,7 @@ DOWNSTREAM = {
     },
     "account.blocked": {
         "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
-        "reason": "Обратитесь к коменданту корпуса",
+        "reason": "Обратитесь к воспитателям",
     },
     "account.unblocked": {"aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv"},
     "message.stored": {"message_id": "018f2c5e-0000-7000-8000-000000000005"},
@@ -109,7 +104,7 @@ DOWNSTREAM = {
 UPSTREAM = {
     "ticket.created": {
         "ticket_ref": "018f2c5e-0000-7000-8000-000000000001",
-        "number": "Р-1204",
+        "number": "Р-25-802",
         "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
         "place": "room",
         "place_note": "Кухня блока, дальняя раковина",
@@ -136,7 +131,7 @@ UPSTREAM = {
     "ticket.withdrawn": {"ticket_ref": "018f2c5e-0000-7000-8000-000000000001"},
     "leave.submitted": {
         "application_ref": "018f2c5e-0000-7000-8000-000000000003",
-        "number": "В-318",
+        "number": "В-25-145",
         "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
         "from_at": "2026-08-15T18:00:00+03:00",
         "to_at": "2026-08-17T21:00:00+03:00",
@@ -146,7 +141,7 @@ UPSTREAM = {
     },
     "pass.submitted": {
         "application_ref": "018f2c5e-0000-7000-8000-000000000004",
-        "number": "П-77",
+        "number": "П-25-67",
         "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
         "from_date": "2026-08-20",
         "to_date": "2026-08-21",
