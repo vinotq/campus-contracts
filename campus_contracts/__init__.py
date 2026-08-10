@@ -54,6 +54,14 @@ ENFORCED = frozenset({
     "account.blocked",
     "account.unblocked",
     "device.registered",
+    # Публикации, 10.08.2026. У АСПиРС заведены рубрика, адрес раздела и
+    # подпись — до этого им негде было взяться, а кабинет их ждал.
+    "news.published",
+    "news.updated",
+    "news.deleted",
+    "event.published",
+    "event.updated",
+    "notice.urgent",
 })
 
 
