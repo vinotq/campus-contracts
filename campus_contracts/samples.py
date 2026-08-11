@@ -43,6 +43,22 @@ DOWNSTREAM = {
         "published_at": "2026-08-05T09:00:00+03:00",
     },
     "notice.urgent": {"aspirs_ref": "414", "title": "Отключение горячей воды до 18:00"},
+    "home.layout": {
+        "blocks": [
+            {"key": "greeting", "kind": "greeting", "sort_order": 0},
+            {"key": "movement", "kind": "movement", "sort_order": 1},
+            {"key": "news", "kind": "news", "title": "Новости", "sort_order": 2},
+            {
+                "key": "17",
+                "kind": "custom",
+                "title": "Ремонт лифта",
+                "body_md": "Левый лифт восьмого корпуса стоит до пятницы.",
+                "link_url": "/reference/rules",
+                "link_label": "Правила проживания",
+                "sort_order": 3,
+            },
+        ]
+    },
     "profile.updated": {
         "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
         "last_name": "Демидов",
@@ -145,6 +161,8 @@ UPSTREAM = {
         "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
         "from_date": "2026-08-20",
         "to_date": "2026-08-21",
+        "from_time": "14:00:00",
+        "to_time": "12:00:00",
         "visitors": [
             {
                 "position": 1,

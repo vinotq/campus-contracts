@@ -13,6 +13,7 @@ from campus_contracts.envelope import Audience, Strict
 from campus_contracts.values import (
     ApplicationStatus,
     CodePurpose,
+    HomeBlockKind,
     ItemStatus,
     LinenMethod,
     PostKind,
@@ -50,6 +51,37 @@ class PostPublished(Strict):
 
 class PostDeleted(Strict):
     aspirs_ref: str = Field(max_length=64)
+
+
+class HomeBlock(Strict):
+    """Один блок главной кабинета.
+
+    `key` — стабильная ссылка на блок: по нему кабинет узнаёт свой блок в новой
+    раскладке и не пересобирает экран заново на каждое сообщение. У штатных это
+    имя вида, у своих — идентификатор из АСПиРС строкой.
+
+    Текст и ссылка есть только у `custom`: остальные блоки кабинет собирает из
+    своих данных, и присланный туда текст было бы некуда деть.
+    """
+
+    key: str = Field(min_length=1, max_length=64)
+    kind: HomeBlockKind
+    title: str | None = Field(default=None, max_length=120)
+    body_md: str | None = Field(default=None, max_length=4_000)
+    link_url: str | None = Field(default=None, max_length=500)
+    link_label: str | None = Field(default=None, max_length=60)
+    sort_order: int = 0
+
+
+class HomeLayout(Strict):
+    """Главная целиком, снимком.
+
+    Не «переставили блок» и не «добавили блок», а весь список сразу: раскладка
+    маленькая, а порядок применения отдельных правок пришлось бы гарантировать,
+    чего очередь не умеет. Пришедший снимок заменяет прежний.
+    """
+
+    blocks: list[HomeBlock] = Field(default_factory=list, max_length=32)
 
 
 class NoticeUrgent(Strict):
@@ -188,6 +220,7 @@ SCHEMAS = {
     "event.published": PostPublished,
     "event.updated": PostPublished,
     "notice.urgent": NoticeUrgent,
+    "home.layout": HomeLayout,
     "profile.updated": ProfileUpdated,
     "ticket.status_changed": TicketStatusChanged,
     "leave.status_changed": ApplicationStatusChanged,

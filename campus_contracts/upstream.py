@@ -5,7 +5,7 @@
 совпадало ничего.
 """
 
-from datetime import date, datetime
+from datetime import date, datetime, time
 
 from pydantic import Field
 
@@ -100,6 +100,11 @@ class PassSubmitted(Strict):
     aspirs_ref: str = Field(max_length=64)
     from_date: date
     to_date: date
+    #: Час приезда и отъезда. Без него охрана читает пропуск как «весь день»,
+    #: а кабинет спрашивает время с прототипа 52V и хранит его у себя.
+    #: Необязательные: у пропусков, поданных до этой правки, времени нет.
+    from_time: time | None = None
+    to_time: time | None = None
     visitors: list[Visitor] = Field(min_length=1, max_length=MAX_VISITORS)
     cars: list[Car] = Field(default_factory=list, max_length=4)
 
