@@ -9,7 +9,7 @@ from datetime import date, datetime
 
 from pydantic import Field
 
-from campus_contracts.envelope import Audience, Strict
+from campus_contracts.envelope import MAX_ROUND_PEOPLE, Audience, Strict
 from campus_contracts.values import (
     ApplicationStatus,
     CodePurpose,
@@ -18,6 +18,7 @@ from campus_contracts.values import (
     LinenMethod,
     PostKind,
     ResidencyStatus,
+    ResidentRole,
 )
 
 # ── Публикации ───────────────────────────────────────────────────────────────
@@ -212,6 +213,127 @@ class AccountBlocked(Strict):
     reason: str | None = Field(default=None, max_length=500)
 
 
+class AccountRolesUpdated(Strict):
+    """Теги студента: полный текущий набор, а не «выдали» и «отобрали».
+
+    Приращения потребовали бы, чтобы обе стороны одинаково считали порядок
+    сообщений, а очередь его не гарантирует: потерянное «отобрали» оставило бы
+    человеку доступ навсегда. Полный набор самоисправляется — следующее же
+    сообщение приводит теги в порядок.
+
+    Пустой список означает, что тегов не осталось, и в этом году это и есть
+    закрытие кабинета: учётная запись без единого тега в него не входит.
+    Поэтому снятие обязано доехать — по нему кабинет гасит сессии, иначе снятый
+    с обходов студент доработает до истечения токена и успеет открыть список
+    подъезда.
+    """
+
+    aspirs_ref: str = Field(max_length=64)
+    roles: list[ResidentRole] = Field(default_factory=list, max_length=16)
+
+
+# ── Обход ────────────────────────────────────────────────────────────────────
+
+
+class RoundEntrance(Strict):
+    """Подъезд, назначенный человеку на вечер."""
+
+    building: str = Field(min_length=1, max_length=16)
+    entrance: str = Field(min_length=1, max_length=16)
+    #: Напарник: обход ходят вдвоём, и человек должен знать, с кем. Подпись для
+    #: экрана, а не ключ — открывать по ней чужую карточку обходному незачем.
+    partner_name: str | None = Field(default=None, max_length=200)
+
+
+class RoundAssignment(Strict):
+    """Кому какие подъезды в этот вечер.
+
+    Список, а не один подъезд: при нехватке готовых раздача даёт по два, а
+    воспитатель ставит и три. Пустой список — снятие с обхода, и работает оно в
+    любой момент, в том числе когда состав подъезда человеку уже пришёл.
+
+    Приходит столько раз, сколько воспитатель переигрывает раздачу: она ему
+    рекомендация, а не решение. Принимающая сторона заменяет назначение
+    целиком, а не дописывает — по той же причине, что и у тегов.
+    """
+
+    aspirs_ref: str = Field(max_length=64)
+    round_date: date
+    entrances: list[RoundEntrance] = Field(default_factory=list, max_length=8)
+    #: Часы этого вечера. Перекрывают настройку кабинета, если пришли: сдвинуть
+    #: один вечер должно быть можно без правки окружения и рестарта.
+    #:
+    #: Часа закрытия готовности здесь нет намеренно. Он нужен кабинету с утра, а
+    #: это сообщение появляется только после раздачи — взять его отсюда некуда.
+    window_opens_at: datetime | None = None
+    window_closes_at: datetime | None = None
+
+
+class RoundPerson(Strict):
+    """Жилец подъезда в списке обхода.
+
+    Ровно то, что на экране, и ничего сверх. Расширять на это `profile.updated`
+    нельзя: та уходит только на тех, у кого заведён кабинет, а обход идёт по
+    всем жильцам — значит пришлось бы слать в ЛКП всю картотеку корпуса с
+    контактами ради экрана, которому хватает шести полей.
+
+    Медицинских сведений здесь нет и не будет. `temporary_room` — адрес, и
+    только: обходящему нужно знать, где искать человека, а не почему он там.
+    """
+
+    aspirs_ref: str = Field(max_length=64)
+    last_name: str = Field(min_length=1, max_length=120)
+    first_name: str = Field(min_length=1, max_length=120)
+    middle_name: str | None = Field(default=None, max_length=120)
+    course: int | None = Field(default=None, ge=1, le=9)
+    #: Кладёт АСПиРС. Выводить этаж из номера комнаты кабинет не будет: на
+    #: первом же корпусе с четырёхзначными номерами это промахнётся молча.
+    floor: int | None = Field(default=None, ge=1)
+    room: str | None = Field(default=None, max_length=32)
+    #: Файл идёт отдельным потоком, здесь только идентификатор.
+    photo_id: str | None = Field(default=None, max_length=64)
+    #: «Отмечать не нужно» — общая метка, а не «заявление». Человек с ней в счёт
+    #: «отмечено N из M» не идёт и кнопок не имеет.
+    mark_required: bool = True
+    #: Подпись к метке готовой строкой: «Заявление с 8 августа, 17:00 до 10
+    #: августа, 20:00». Не причина и не диагноз.
+    note: str | None = Field(default=None, max_length=200)
+    temporary_room: str | None = Field(default=None, max_length=32)
+
+
+class RoundRoster(Strict):
+    """Состав подъезда на вечер, снимком.
+
+    Живёт своей таблицей и к картотеке кабинета не привязан: обход идёт по всем
+    жильцам, включая тех, кто кабинет не заводил.
+    """
+
+    round_date: date
+    building: str = Field(min_length=1, max_length=16)
+    entrance: str = Field(min_length=1, max_length=16)
+    people: list[RoundPerson] = Field(default_factory=list, max_length=MAX_ROUND_PEOPLE)
+
+
+class RoundExtended(Strict):
+    """Ночной продлил один подъезд, а не вечер целиком.
+
+    Двигать вечер всем ради одного незакрытого значило бы снова открыть уже
+    сданные подъезды. По истечении продления подъезд закрывается тем же
+    порядком, что и в общий час.
+    """
+
+    round_date: date
+    building: str = Field(min_length=1, max_length=16)
+    entrance: str = Field(min_length=1, max_length=16)
+    closes_at: datetime
+    #: Подпись сотрудника для экрана: обходной должен видеть, что продление
+    #: настоящее, а не показалось.
+    extended_by: str | None = Field(default=None, max_length=200)
+
+
+# ── Служебное ────────────────────────────────────────────────────────────────
+
+
 class MessageStored(Strict):
     """«Записал у себя, можно стирать».
 
@@ -240,5 +362,9 @@ SCHEMAS = {
     "account.invited": AccountInvited,
     "account.blocked": AccountBlocked,
     "account.unblocked": AccountBlocked,
+    "account.roles_updated": AccountRolesUpdated,
+    "round.assignment": RoundAssignment,
+    "round.roster": RoundRoster,
+    "round.extended": RoundExtended,
     "message.stored": MessageStored,
 }

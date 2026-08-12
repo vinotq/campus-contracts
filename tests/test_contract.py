@@ -18,10 +18,10 @@ from campus_contracts import (
     Direction,
     Envelope,
     UnknownMessageType,
-    is_enforced,
     schema_for,
     validate,
 )
+from campus_contracts.envelope import MAX_ROUND_PEOPLE
 from campus_contracts.samples import SAMPLES
 
 ALL_TYPES = [
@@ -51,6 +51,59 @@ def test_образец_переживает_дорогу(direction, message_typ
     body = json.loads(json.dumps(SAMPLES[direction][message_type], ensure_ascii=False))
     validate(direction, message_type, body)
     assert len(json.dumps(body).encode()) <= MAX_MESSAGE_BYTES
+
+
+def test_полный_подъезд_влезает_в_сообщение():
+    """Единственное место контракта, где размер задаётся произведением.
+
+    У остальных типов длину диктует одно поле, и потолок сообщения им не грозит.
+    Здесь список людей умножается на длину каждого, и посчитать это надо здесь:
+    иначе первый же большой подъезд с длинными подписями получит 413 на весь
+    вечерний обход, и узнаем мы об этом от студента, а не от теста.
+
+    Тела собираются по верхним границам схемы, а не по образцам: образец мал по
+    определению, а ломается как раз полный подъезд.
+    """
+    человек = {
+        "aspirs_ref": "Z" * 22,
+        "last_name": "Константинопольская-Оглы",
+        "first_name": "Александра",
+        "middle_name": "Владиславовна",
+        "course": 4,
+        "floor": 12,
+        "room": "1204а",
+        "photo_id": "018f2c5e-0000-7000-8000-00000000000c",
+        "mark_required": False,
+        "note": "З" * 200,
+        "temporary_room": "8-1-5333",
+    }
+    отметка = {
+        "aspirs_ref": "Z" * 22,
+        "mark": "absent",
+        "comment": "К" * 300,
+        "marked_by": "Q" * 22,
+    }
+    тела = {
+        (Direction.DOWNSTREAM, "round.roster"): {
+            "round_date": "2026-08-12",
+            "building": "8",
+            "entrance": "2",
+            "people": [человек] * MAX_ROUND_PEOPLE,
+        },
+        (Direction.UPSTREAM, "round.submitted"): {
+            "round_date": "2026-08-12",
+            "building": "8",
+            "entrance": "2",
+            "submitted_by": "Z" * 22,
+            "submitted_at": "2026-08-12T22:40:00+03:00",
+            "auto_closed": False,
+            "marks": [отметка] * MAX_ROUND_PEOPLE,
+        },
+    }
+    for (direction, message_type), body in тела.items():
+        validate(direction, message_type, body)
+        размер = len(json.dumps(body, ensure_ascii=False).encode())
+        assert размер <= MAX_MESSAGE_BYTES, (message_type, размер)
 
 
 def test_образцов_не_больше_чем_типов():
@@ -103,6 +156,19 @@ def test_статусы_не_принимают_чужих_значений():
         validate(Direction.DOWNSTREAM, "ticket.status_changed", body)
 
 
+#: Сообщения, адресованные не человеку. У них ключа человека нет на верхнем
+#: уровне, и это не упущение: раскладка главной принадлежит кабинету целиком, а
+#: три типа обхода — подъезду и дате. Люди внутри них лежат списком, и там ключ
+#: тот же самый, `aspirs_ref`.
+БЕЗ_ЧЕЛОВЕКА = frozenset({
+    "message.stored",
+    "home.layout",
+    "round.roster",
+    "round.extended",
+    "round.submitted",
+})
+
+
 def test_человек_везде_один_и_тот_же_ключ():
     """`resident_ref` и `employee_id` из контракта убраны намеренно."""
     for direction, schemas in SCHEMAS.items():
@@ -112,4 +178,20 @@ def test_человек_везде_один_и_тот_же_ключ():
             assert "employee_id" not in fields, message_type
             if any(f.endswith("_ref") for f in fields) or "aspirs_ref" in fields:
                 continue
-            assert message_type in ("message.stored",), (direction, message_type)
+            assert message_type in БЕЗ_ЧЕЛОВЕКА, (direction, message_type)
+
+
+def test_человек_внутри_списков_тоже_aspirs_ref():
+    """Список людей внутри сообщения — то же место, где ключи расходились.
+
+    Проверка верхнего уровня его не ловит: `round.roster` и `round.submitted`
+    адресованы подъезду, а люди у них вложены. Ровно так и разъезжаются схемы —
+    снаружи всё сходится, внутри у каждого своё имя поля.
+    """
+    вложенные = [
+        SCHEMAS[Direction.DOWNSTREAM]["round.roster"].model_fields["people"],
+        SCHEMAS[Direction.UPSTREAM]["round.submitted"].model_fields["marks"],
+    ]
+    for field in вложенные:
+        item = field.annotation.__args__[0]
+        assert "aspirs_ref" in item.model_fields, item.__name__

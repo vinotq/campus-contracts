@@ -89,6 +89,15 @@ ENFORCED = frozenset({
     # Подтверждение приёма, 10.08.2026: единый `message.stored` вместо
     # `<тип>.stored`. Последний непереведённый тип контракта.
     "message.stored",
+    # Обходные, 12.08.2026. Шесть типов заведены сразу со сверкой: отправителей
+    # у них ещё нет, ломать нечего, а новый тип без сверки — это ровно тот
+    # способ, которым обмен молчал три недели.
+    "account.roles_updated",
+    "round.assignment",
+    "round.roster",
+    "round.extended",
+    "round.readiness",
+    "round.submitted",
 })
 
 

@@ -9,7 +9,8 @@ from datetime import date, datetime, time
 
 from pydantic import Field
 
-from campus_contracts.envelope import Strict
+from campus_contracts.envelope import MAX_ROUND_PEOPLE, Strict
+from campus_contracts.values import RoundMark
 
 #: Больше гостей за раз в пропуск не пускают.
 MAX_VISITORS = 10
@@ -130,6 +131,62 @@ class DeviceRegistered(Strict):
     aspirs_ref: str = Field(max_length=64)
 
 
+class RoundReadiness(Strict):
+    """«Иду сегодня».
+
+    Единственное, что кабинет отправляет наверх до обхода, и единственное, что
+    работает в закрытом кабинете: принимается весь день до часа раздачи. В
+    раздачу попадают только отметившиеся, поэтому без этого сообщения ротация
+    получает пустой список.
+
+    `ready` булево, а не «отметился»: передумать до раздачи можно.
+    """
+
+    aspirs_ref: str = Field(max_length=64)
+    round_date: date
+    ready: bool
+
+
+class RoundMarkItem(Strict):
+    """Отметка по одному человеку."""
+
+    aspirs_ref: str = Field(max_length=64)
+    mark: RoundMark
+    #: Свободный текст про местонахождение: у принимающей стороны он попадает
+    #: под шифрование, как и всякие сведения о человеке.
+    #:
+    #: Короче прочих свободных полей контракта намеренно. Это подпись «сказали,
+    #: уехал к родителям», а не объяснительная, и умножается она на весь
+    #: подъезд: при потолке в две тысячи знаков полный подъезд не влезал в
+    #: сообщение впятеро.
+    comment: str | None = Field(default=None, max_length=300)
+    #: Кто отметил. Отметки принадлежат подъезду и дате, а не тому, кто их
+    #: ставил, поэтому при переназначении посреди обхода в одном подъезде их
+    #: бывает двое. Пусто у тех, кого никто не отметил.
+    marked_by: str | None = Field(default=None, max_length=64)
+
+
+class RoundSubmitted(Strict):
+    """Обход по подъезду закрыт.
+
+    По одному подъезду приходит несколько раз: сначала автозакрытие в конце
+    вечера, потом продление ночного, потом закрытие продления. Верным считается
+    последнее пришедшее — второй обход на ту же дату и подъезд заводить нельзя.
+
+    Приходит целиком, включая неотмеченных: иначе принимающая сторона не
+    отличит «до человека не дошли» от «человека не было в списке».
+    """
+
+    round_date: date
+    building: str = Field(min_length=1, max_length=16)
+    entrance: str = Field(min_length=1, max_length=16)
+    #: Пусто при автозакрытии: кнопку никто не нажимал.
+    submitted_by: str | None = Field(default=None, max_length=64)
+    submitted_at: datetime
+    auto_closed: bool = False
+    marks: list[RoundMarkItem] = Field(default_factory=list, max_length=MAX_ROUND_PEOPLE)
+
+
 #: Тип сообщения → схема тела.
 SCHEMAS = {
     "ticket.created": TicketCreated,
@@ -140,4 +197,6 @@ SCHEMAS = {
     "application.withdrawn": ApplicationWithdrawn,
     "linen.debt_acknowledged": LinenDebtAcknowledged,
     "device.registered": DeviceRegistered,
+    "round.readiness": RoundReadiness,
+    "round.submitted": RoundSubmitted,
 }

@@ -115,6 +115,59 @@ DOWNSTREAM = {
         "reason": "Обратитесь к воспитателям",
     },
     "account.unblocked": {"aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv"},
+    "account.roles_updated": {
+        "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
+        "roles": ["rounds"],
+    },
+    "round.assignment": {
+        "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
+        "round_date": "2026-08-12",
+        "entrances": [
+            {"building": "8", "entrance": "2", "partner_name": "Соколова Мария"},
+        ],
+        "window_opens_at": "2026-08-12T21:59:00+03:00",
+        "window_closes_at": "2026-08-12T23:00:00+03:00",
+    },
+    "round.roster": {
+        "round_date": "2026-08-12",
+        "building": "8",
+        "entrance": "2",
+        "people": [
+            {
+                "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
+                "last_name": "Демидов",
+                "first_name": "Глеб",
+                "middle_name": "Иванович",
+                "course": 2,
+                "floor": 3,
+                "room": "312",
+                "photo_id": "018f2c5e-0000-7000-8000-00000000000c",
+                "mark_required": True,
+                "note": None,
+                "temporary_room": None,
+            },
+            {
+                "aspirs_ref": "Qw3_r7TfGh0LmN2pQrStUv",
+                "last_name": "Соколова",
+                "first_name": "Мария",
+                "middle_name": None,
+                "course": 1,
+                "floor": 3,
+                "room": "315",
+                "photo_id": None,
+                "mark_required": False,
+                "note": "Заявление с 8 августа, 17:00 до 10 августа, 20:00",
+                "temporary_room": "8-1-5333",
+            },
+        ],
+    },
+    "round.extended": {
+        "round_date": "2026-08-12",
+        "building": "8",
+        "entrance": "2",
+        "closes_at": "2026-08-13T00:30:00+03:00",
+        "extended_by": "Ночной воспитатель корпуса 8",
+    },
     "message.stored": {"message_id": "018f2c5e-0000-7000-8000-000000000005"},
 }
 
@@ -180,6 +233,39 @@ UPSTREAM = {
         "period_start": "2026-07-27",
     },
     "device.registered": {"aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv"},
+    "round.readiness": {
+        "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
+        "round_date": "2026-08-12",
+        "ready": True,
+    },
+    "round.submitted": {
+        "round_date": "2026-08-12",
+        "building": "8",
+        "entrance": "2",
+        "submitted_by": "Zx8_q1TfGh0LmN2pQrStUv",
+        "submitted_at": "2026-08-12T22:40:00+03:00",
+        "auto_closed": False,
+        "marks": [
+            {
+                "aspirs_ref": "Qw3_r7TfGh0LmN2pQrStUv",
+                "mark": "present",
+                "comment": None,
+                "marked_by": "Zx8_q1TfGh0LmN2pQrStUv",
+            },
+            {
+                "aspirs_ref": "Ty5_k2TfGh0LmN2pQrStUv",
+                "mark": "absent",
+                "comment": "Сказали, уехал к родителям",
+                "marked_by": "Zx8_q1TfGh0LmN2pQrStUv",
+            },
+            {
+                "aspirs_ref": "Uu9_m4TfGh0LmN2pQrStUv",
+                "mark": "unmarked",
+                "comment": None,
+                "marked_by": None,
+            },
+        ],
+    },
 }
 
 SAMPLES = {
