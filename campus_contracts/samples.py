@@ -161,6 +161,11 @@ DOWNSTREAM = {
             },
         ],
     },
+    "round.schedule": {
+        "readiness_closes_time": "21:00",
+        "opens_time": "21:59",
+        "closes_time": "23:00",
+    },
     "round.extended": {
         "round_date": "2026-08-12",
         "building": "8",

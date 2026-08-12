@@ -96,6 +96,9 @@ ENFORCED = frozenset({
     "round.assignment",
     "round.roster",
     "round.extended",
+    # Часы вечера, 12.08.2026 — следом за тем, как они переехали в АСПиРС из
+    # окружения в базу и стали редактируемыми с экрана.
+    "round.schedule",
     "round.readiness",
     "round.submitted",
 })
