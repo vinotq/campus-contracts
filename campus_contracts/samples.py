@@ -145,6 +145,9 @@ DOWNSTREAM = {
                 "mark_required": True,
                 "note": None,
                 "temporary_room": None,
+                # Сегодня восемнадцать: в списке до конца вечера, назавтра его
+                # тут не будет.
+                "flags": ["adult_today"],
             },
             {
                 "aspirs_ref": "Qw3_r7TfGh0LmN2pQrStUv",

@@ -16,6 +16,7 @@ from campus_contracts.values import (
     HomeBlockKind,
     ItemStatus,
     LinenMethod,
+    PersonFlag,
     PostKind,
     ResidencyStatus,
     ResidentRole,
@@ -299,6 +300,12 @@ class RoundPerson(Strict):
     #: августа, 20:00». Не причина и не диагноз.
     note: str | None = Field(default=None, max_length=200)
     temporary_room: str | None = Field(default=None, max_length=32)
+    #: Пометки из словаря: сегодня восемнадцать, и дальше по мере появления.
+    #: Списком, а не полем на каждый случай — заводить колонку под каждую
+    #: пометку значит переделывать контракт, схемы и таблицы по третьему разу.
+    #: Подпись пишет принимающая сторона: отправитель сообщает факт, а не
+    #: формулировку.
+    flags: list[PersonFlag] = Field(default_factory=list, max_length=8)
 
 
 class RoundRoster(Strict):
