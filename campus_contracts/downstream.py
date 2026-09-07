@@ -135,6 +135,9 @@ class ProfileUpdated(Strict):
     email: str | None = Field(default=None, max_length=190)
     telegram: str | None = Field(default=None, max_length=64)
     vk: str | None = Field(default=None, max_length=190)
+    #: Что сказать студенту, если в карточке чего-то не хватает. Чего именно,
+    #: кабинету не сообщается: состав пробелов это внутренняя кухня АСПиРС.
+    notice: str | None = Field(default=None, max_length=300)
 
 
 # ── Заявки и заявления ───────────────────────────────────────────────────────
