@@ -77,6 +77,7 @@ DOWNSTREAM = {
         "email": "gleb.demidov@mail.ru",
         "telegram": "@gleb",
         "vk": None,
+        "notice": "Пригласите завтра к Воспитателям с 9:00 до 21:00",
     },
     "ticket.status_changed": {
         "ticket_ref": "018f2c5e-0000-7000-8000-000000000001",
