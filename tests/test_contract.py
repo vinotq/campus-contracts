@@ -23,6 +23,7 @@ from campus_contracts import (
 )
 from campus_contracts.envelope import MAX_ROUND_PEOPLE
 from campus_contracts.samples import SAMPLES
+from campus_contracts.values import PersonFlag
 
 ALL_TYPES = [
     (direction, message_type)
@@ -53,6 +54,13 @@ def test_a_sample_survives_the_round_trip(direction, message_type):
     assert len(json.dumps(body).encode()) <= MAX_MESSAGE_BYTES
 
 
+#: Пометки в худшем случае: восемь — потолок `flags`, и все самой длинной из
+#: словаря. Верх здесь задаёт не длина строки, а длина ключа: `flags`
+#: перечислимое, свободных строк в нём нет. Появится ключ длиннее — граница
+#: поднимется сама, и подъезд пересчитается этим же тестом.
+WORST_FLAGS = [max(PersonFlag, key=lambda flag: len(flag.value)).value] * 8
+
+
 def test_a_full_entrance_fits_into_one_message():
     """Единственное место контракта, где размер задаётся произведением.
 
@@ -63,6 +71,10 @@ def test_a_full_entrance_fits_into_one_message():
 
     Тела собираются по верхним границам схемы, а не по образцам: образец мал по
     определению, а ломается как раз полный подъезд.
+
+    Из-за этого же правила здесь обязаны быть `flags`: заведённые в 1.7.0, в
+    подсчёт они не попали, и до 1.9.0 граница считалась по человеку меньше
+    того, которого схема разрешает, — то есть ровно не по верхним границам.
     """
     person = {
         "aspirs_ref": "Z" * 22,
@@ -76,6 +88,7 @@ def test_a_full_entrance_fits_into_one_message():
         "mark_required": False,
         "note": "З" * 200,
         "temporary_room": "8-1-5333",
+        "flags": WORST_FLAGS,
     }
     round_mark = {
         "aspirs_ref": "Z" * 22,

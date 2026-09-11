@@ -128,6 +128,7 @@ DOWNSTREAM = {
         ],
         "window_opens_at": "2026-08-12T21:59:00+03:00",
         "window_closes_at": "2026-08-12T23:00:00+03:00",
+        "rounds_walked": 17,
     },
     "round.roster": {
         "round_date": "2026-08-12",
