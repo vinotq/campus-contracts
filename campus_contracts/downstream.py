@@ -7,7 +7,7 @@
 
 from datetime import date, datetime, time
 
-from pydantic import Field
+from pydantic import Field, field_validator
 
 from campus_contracts.envelope import MAX_ROUND_PEOPLE, Audience, Strict
 from campus_contracts.values import (
@@ -186,6 +186,27 @@ class LinenGranted(Strict):
     method: LinenMethod = LinenMethod.QR
     #: Подпись для экрана, а не логин сотрудника.
     granted_by: str | None = Field(default=None, max_length=120)
+
+
+class LinenScheduleUpdated(Strict):
+    """График смены белья снимком целиком, при каждой правке в АСПиРС.
+
+    Дни недели по ISO: 1 понедельник, 7 воскресенье. Без этого сообщения
+    кабинет выпускал коды по своему графику и не знал о новых днях.
+    """
+
+    weekdays: list[int] = Field(min_length=1, max_length=7)
+    opens_at: time
+    closes_at: time
+    break_from: time | None = None
+    break_to: time | None = None
+
+    @field_validator("weekdays")
+    @classmethod
+    def _iso_days(cls, value: list[int]) -> list[int]:
+        if any(day < 1 or day > 7 for day in value) or len(set(value)) != len(value):
+            raise ValueError("дни недели по ISO, от 1 до 7, без повторов")
+        return value
 
 
 class LinenDebtCreated(Strict):
@@ -452,6 +473,7 @@ SCHEMAS = {
     "pass.status_changed": ApplicationStatusChanged,
     "linen.granted": LinenGranted,
     "linen.debt_created": LinenDebtCreated,
+    "linen.schedule": LinenScheduleUpdated,
     "account.invited": AccountInvited,
     "account.blocked": AccountBlocked,
     "account.unblocked": AccountBlocked,

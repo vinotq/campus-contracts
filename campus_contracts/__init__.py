@@ -110,6 +110,9 @@ ENFORCED = frozenset({
     # решает по каждому полю, принятое пишется в карточку сразу.
     "profile.change_requested",
     "profile.change_resolved",
+    # График смены белья, 24.09.2026: правится в АСПиРС, кабинет выпускает
+    # коды по нему же.
+    "linen.schedule",
 })
 
 
