@@ -136,6 +136,25 @@ class LinenCollected(Strict):
     station: str = Field(min_length=1, max_length=64)
 
 
+class ProfileChangeRequested(Strict):
+    """Студент просит поправить карточку.
+
+    Передаются только поля, которые он хочет изменить. Решение приходит по
+    каждому полю отдельно: одно можно принять, другое отклонить.
+    """
+
+    request_ref: str = Field(max_length=64)
+    aspirs_ref: str = Field(max_length=64)
+    submitted_at: datetime
+    telegram: str | None = Field(default=None, max_length=64)
+    vk: str | None = Field(default=None, max_length=190)
+    phone: str | None = Field(default=None, max_length=32)
+    birth_date: date | None = None
+    email: str | None = Field(default=None, max_length=190)
+    room: str | None = Field(default=None, max_length=32)
+    comment: str | None = Field(default=None, max_length=1000)
+
+
 class DeviceRegistered(Strict):
     """Кабинет заработал: студент вошёл с устройства.
 
@@ -212,6 +231,7 @@ SCHEMAS = {
     "application.withdrawn": ApplicationWithdrawn,
     "linen.debt_acknowledged": LinenDebtAcknowledged,
     "linen.collected": LinenCollected,
+    "profile.change_requested": ProfileChangeRequested,
     "device.registered": DeviceRegistered,
     "round.readiness": RoundReadiness,
     "round.submitted": RoundSubmitted,

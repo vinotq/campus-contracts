@@ -104,6 +104,17 @@ class ResidencyStatus(StrEnum):
     EVICTED = "evicted"
 
 
+class ProfileField(StrEnum):
+    """Что студент может попросить поправить в карточке. Фото меняют только воспитатели."""
+
+    TELEGRAM = "telegram"
+    VK = "vk"
+    PHONE = "phone"
+    BIRTH_DATE = "birth_date"
+    EMAIL = "email"
+    ROOM = "room"
+
+
 class ResidentRole(StrEnum):
     """Тег студента: чем он занят сверх проживания.
 

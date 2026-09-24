@@ -18,6 +18,7 @@ from campus_contracts.values import (
     LinenMethod,
     PersonFlag,
     PostKind,
+    ProfileField,
     ResidencyStatus,
     ResidentRole,
 )
@@ -209,6 +210,26 @@ class AccountInvited(Strict):
     code_hash: str = Field(min_length=64, max_length=64)
     expires_at: datetime
     purpose: CodePurpose = CodePurpose.ACTIVATION
+
+
+class ProfileChangeItem(Strict):
+    field: ProfileField
+    accepted: bool
+    #: Почему отклонено. Показывается студенту.
+    reason: str | None = Field(default=None, max_length=300)
+
+
+class ProfileChangeResolved(Strict):
+    """Решение по запросу на изменение карточки, по каждому полю.
+
+    Принятое уже записано в карточку, и новые значения приедут обычным
+    `profile.updated`.
+    """
+
+    request_ref: str = Field(max_length=64)
+    aspirs_ref: str = Field(max_length=64)
+    resolved_at: datetime
+    items: list[ProfileChangeItem] = Field(min_length=1, max_length=len(ProfileField))
 
 
 class ScannerUpdated(Strict):
@@ -436,6 +457,7 @@ SCHEMAS = {
     "account.unblocked": AccountBlocked,
     "account.roles_updated": AccountRolesUpdated,
     "scanner.updated": ScannerUpdated,
+    "profile.change_resolved": ProfileChangeResolved,
     "round.assignment": RoundAssignment,
     "round.roster": RoundRoster,
     "round.schedule": RoundSchedule,

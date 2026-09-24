@@ -106,6 +106,10 @@ ENFORCED = frozenset({
     # станции заводит АСПиРС и присылает снимком.
     "linen.collected",
     "scanner.updated",
+    # Запросы на изменение карточки, 24.09.2026: студент просит, воспитатель
+    # решает по каждому полю, принятое пишется в карточку сразу.
+    "profile.change_requested",
+    "profile.change_resolved",
 })
 
 

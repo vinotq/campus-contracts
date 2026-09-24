@@ -116,6 +116,15 @@ DOWNSTREAM = {
         "reason": "Обратитесь к воспитателям",
     },
     "account.unblocked": {"aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv"},
+    "profile.change_resolved": {
+        "request_ref": "018f2c5e-0000-7000-8000-000000000009",
+        "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
+        "resolved_at": "2026-09-25T11:00:00+03:00",
+        "items": [
+            {"field": "telegram", "accepted": True},
+            {"field": "vk", "accepted": False, "reason": "Такой страницы нет"},
+        ],
+    },
     "scanner.updated": {
         "login": "prachka",
         "name": "Прачечная",
@@ -247,6 +256,14 @@ UPSTREAM = {
     "linen.debt_acknowledged": {
         "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
         "period_start": "2026-07-27",
+    },
+    "profile.change_requested": {
+        "request_ref": "018f2c5e-0000-7000-8000-000000000009",
+        "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
+        "submitted_at": "2026-09-24T18:00:00+03:00",
+        "telegram": "@nastya_v",
+        "vk": "vk.com/nastyav",
+        "comment": "Сменила ник",
     },
     "linen.collected": {
         "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
