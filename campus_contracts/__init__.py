@@ -114,6 +114,7 @@ ENFORCED = frozenset({
     # коды по нему же.
     "linen.schedule",
     "linen.revoked",
+    "linen.debt_closed",
 })
 
 

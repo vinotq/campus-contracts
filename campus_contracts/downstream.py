@@ -188,6 +188,12 @@ class LinenGranted(Strict):
     granted_by: str | None = Field(default=None, max_length=120)
 
 
+class LinenDebtClosed(Strict):
+    aspirs_ref: str = Field(max_length=64)
+    period_start: date
+    closed_at: datetime
+
+
 class LinenRevoked(Strict):
     aspirs_ref: str = Field(max_length=64)
     period_start: date
@@ -481,6 +487,7 @@ SCHEMAS = {
     "linen.debt_created": LinenDebtCreated,
     "linen.schedule": LinenScheduleUpdated,
     "linen.revoked": LinenRevoked,
+    "linen.debt_closed": LinenDebtClosed,
     "account.invited": AccountInvited,
     "account.blocked": AccountBlocked,
     "account.unblocked": AccountBlocked,
