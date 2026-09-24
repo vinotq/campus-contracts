@@ -101,6 +101,11 @@ DOWNSTREAM = {
         "method": "qr",
         "granted_by": "Кастелянша корпуса 12",
     },
+    "linen.revoked": {
+        "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
+        "period_start": "2026-08-03",
+        "revoked_at": "2026-08-05T11:00:00+03:00",
+    },
     "linen.schedule": {
         "weekdays": [7, 1, 4],
         "opens_at": "09:00",

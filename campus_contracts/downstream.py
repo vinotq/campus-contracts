@@ -188,6 +188,12 @@ class LinenGranted(Strict):
     granted_by: str | None = Field(default=None, max_length=120)
 
 
+class LinenRevoked(Strict):
+    aspirs_ref: str = Field(max_length=64)
+    period_start: date
+    revoked_at: datetime
+
+
 class LinenScheduleUpdated(Strict):
     """График смены белья снимком целиком, при каждой правке в АСПиРС.
 
@@ -474,6 +480,7 @@ SCHEMAS = {
     "linen.granted": LinenGranted,
     "linen.debt_created": LinenDebtCreated,
     "linen.schedule": LinenScheduleUpdated,
+    "linen.revoked": LinenRevoked,
     "account.invited": AccountInvited,
     "account.blocked": AccountBlocked,
     "account.unblocked": AccountBlocked,
