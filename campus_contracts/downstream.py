@@ -211,6 +211,22 @@ class AccountInvited(Strict):
     purpose: CodePurpose = CodePurpose.ACTIVATION
 
 
+class ScannerUpdated(Strict):
+    """Учётка сканера прачечной: снимок целиком.
+
+    Заводит её сотрудник в АСПиРС, а входят ею на станции в кабинете. В
+    АСПиРС она не открывает ничего, поэтому пароль там не хранится вовсе:
+    уезжает argon2id-хеш, и только когда пароль задан заново.
+    """
+
+    login: str = Field(min_length=3, max_length=32, pattern=r"^[a-z0-9._-]+$")
+    name: str = Field(min_length=1, max_length=64)
+    active: bool
+    password_hash: str | None = Field(
+        default=None, max_length=256, pattern=r"^\$argon2id\$"
+    )
+
+
 class AccountBlocked(Strict):
     aspirs_ref: str = Field(max_length=64)
     #: Показывается студенту при попытке входа.
@@ -419,6 +435,7 @@ SCHEMAS = {
     "account.blocked": AccountBlocked,
     "account.unblocked": AccountBlocked,
     "account.roles_updated": AccountRolesUpdated,
+    "scanner.updated": ScannerUpdated,
     "round.assignment": RoundAssignment,
     "round.roster": RoundRoster,
     "round.schedule": RoundSchedule,

@@ -121,6 +121,21 @@ class LinenDebtAcknowledged(Strict):
     period_start: date
 
 
+class LinenCollected(Strict):
+    """Бельё выдано по коду на станции прачечной.
+
+    Выдачу отмечает кабинет: у станции нет ни учётки, ни маршрута в АСПиРС.
+    `by_proxy` — код был пересланный, бельё забрал не сам студент.
+    """
+
+    aspirs_ref: str = Field(max_length=64)
+    period_start: date
+    collected_at: datetime
+    by_proxy: bool = False
+    #: Подпись станции для журнала, а не её идентификатор.
+    station: str = Field(min_length=1, max_length=64)
+
+
 class DeviceRegistered(Strict):
     """Кабинет заработал: студент вошёл с устройства.
 
@@ -196,6 +211,7 @@ SCHEMAS = {
     "pass.submitted": PassSubmitted,
     "application.withdrawn": ApplicationWithdrawn,
     "linen.debt_acknowledged": LinenDebtAcknowledged,
+    "linen.collected": LinenCollected,
     "device.registered": DeviceRegistered,
     "round.readiness": RoundReadiness,
     "round.submitted": RoundSubmitted,

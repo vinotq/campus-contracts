@@ -181,6 +181,7 @@ WITHOUT_PERSON = frozenset({
     "round.schedule",
     "round.extended",
     "round.submitted",
+    "scanner.updated",
 })
 
 

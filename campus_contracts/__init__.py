@@ -101,6 +101,11 @@ ENFORCED = frozenset({
     "round.schedule",
     "round.readiness",
     "round.submitted",
+    # Станция прачечной, 24.09.2026: выдачу по коду отмечает кабинет, АСПиРС
+    # принимает её в журнал. Пересланный код помечается `by_proxy`. Учётки
+    # станции заводит АСПиРС и присылает снимком.
+    "linen.collected",
+    "scanner.updated",
 })
 
 

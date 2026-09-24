@@ -116,6 +116,12 @@ DOWNSTREAM = {
         "reason": "Обратитесь к воспитателям",
     },
     "account.unblocked": {"aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv"},
+    "scanner.updated": {
+        "login": "prachka",
+        "name": "Прачечная",
+        "active": True,
+        "password_hash": "$argon2id$v=19$m=19456,t=2,p=1$c2FsdHNhbHQ$aGFzaGhhc2hoYXNoaGFzaA",
+    },
     "account.roles_updated": {
         "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
         "roles": ["rounds"],
@@ -241,6 +247,13 @@ UPSTREAM = {
     "linen.debt_acknowledged": {
         "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
         "period_start": "2026-07-27",
+    },
+    "linen.collected": {
+        "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
+        "period_start": "2026-09-20",
+        "collected_at": "2026-09-20T10:15:00+03:00",
+        "by_proxy": True,
+        "station": "Прачечная",
     },
     "device.registered": {"aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv"},
     "round.readiness": {
