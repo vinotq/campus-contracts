@@ -203,6 +203,24 @@ DOWNSTREAM = {
         "opens_time": "21:59",
         "closes_time": "23:00",
     },
+    "duty.entrance": {
+        "building": "8",
+        "entrance": "1",
+        "heads": ["Zx8_q1TfGh0LmN2pQrStUv"],
+        "rooms": [
+            {"room": "5361", "floor": 5},
+            {"room": "5362", "floor": 5},
+            {"room": "5363", "floor": 5},
+        ],
+    },
+    "duty.instruction": {
+        "zones": [
+            {"name": "Кухня", "items": ["Протереть столы и плиту", "Проверить, что пол чистый"]},
+            {"name": "Лифт", "items": ["Проверить, что в кабине чисто"]},
+        ],
+        "updated_at": "2026-09-26T18:40:00+03:00",
+        "updated_by": "Лаптев Андрей Николаевич",
+    },
     "round.extended": {
         "round_date": "2026-08-12",
         "building": "8",
@@ -294,6 +312,11 @@ UPSTREAM = {
         "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
         "round_date": "2026-08-12",
         "ready": True,
+    },
+    "duty.instruction_edited": {
+        "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
+        "zones": [{"name": "Кухня", "items": ["Протереть столы и плиту"]}],
+        "edited_at": "2026-09-26T18:45:00+03:00",
     },
     "round.submitted": {
         "round_date": "2026-08-12",

@@ -115,6 +115,9 @@ ENFORCED = frozenset({
     "linen.schedule",
     "linen.revoked",
     "linen.debt_closed",
+    "duty.entrance",
+    "duty.instruction",
+    "duty.instruction_edited",
 })
 
 

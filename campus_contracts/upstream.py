@@ -9,6 +9,7 @@ from datetime import date, datetime, time
 
 from pydantic import Field
 
+from campus_contracts.duty import MAX_DUTY_ZONES, DutyZone
 from campus_contracts.envelope import MAX_ROUND_PEOPLE, Strict
 from campus_contracts.values import RoundMark
 
@@ -221,6 +222,12 @@ class RoundSubmitted(Strict):
     marks: list[RoundMarkItem] = Field(default_factory=list, max_length=MAX_ROUND_PEOPLE)
 
 
+class DutyInstructionEdited(Strict):
+    aspirs_ref: str = Field(max_length=64)
+    zones: list[DutyZone] = Field(min_length=1, max_length=MAX_DUTY_ZONES)
+    edited_at: datetime
+
+
 #: Тип сообщения → схема тела.
 SCHEMAS = {
     "ticket.created": TicketCreated,
@@ -235,4 +242,5 @@ SCHEMAS = {
     "device.registered": DeviceRegistered,
     "round.readiness": RoundReadiness,
     "round.submitted": RoundSubmitted,
+    "duty.instruction_edited": DutyInstructionEdited,
 }

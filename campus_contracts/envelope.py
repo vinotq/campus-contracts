@@ -28,6 +28,8 @@ MAX_BATCH = 100
 #: не считать это произведение значит однажды получить 413 на весь вечерний
 #: обход и узнать об этом от студента, а не от теста.
 MAX_ROUND_PEOPLE = 250
+MAX_DUTY_ROOMS = 200
+MAX_DUTY_HEADS = 32
 
 
 class Strict(BaseModel):

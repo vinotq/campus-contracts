@@ -9,7 +9,14 @@ from datetime import date, datetime, time
 
 from pydantic import Field, field_validator
 
-from campus_contracts.envelope import MAX_ROUND_PEOPLE, Audience, Strict
+from campus_contracts.duty import MAX_DUTY_ZONES, DutyZone
+from campus_contracts.envelope import (
+    MAX_DUTY_HEADS,
+    MAX_DUTY_ROOMS,
+    MAX_ROUND_PEOPLE,
+    Audience,
+    Strict,
+)
 from campus_contracts.values import (
     ApplicationStatus,
     CodePurpose,
@@ -457,6 +464,38 @@ class RoundExtended(Strict):
     extended_by: str | None = Field(default=None, max_length=200)
 
 
+class DutyRoom(Strict):
+    room: str = Field(min_length=1, max_length=32)
+    floor: int | None = None
+
+
+class DutyEntrance(Strict):
+    building: str = Field(min_length=1, max_length=16)
+    entrance: str = Field(min_length=1, max_length=16)
+    heads: list[str] = Field(default_factory=list, max_length=MAX_DUTY_HEADS)
+    rooms: list[DutyRoom] = Field(default_factory=list, max_length=MAX_DUTY_ROOMS)
+
+    @field_validator("heads")
+    @classmethod
+    def _refs(cls, value: list[str]) -> list[str]:
+        if any(not ref or len(ref) > 64 for ref in value) or len(set(value)) != len(value):
+            raise ValueError("старосты ключами aspirs_ref, без повторов")
+        return value
+
+    @field_validator("rooms")
+    @classmethod
+    def _unique_rooms(cls, value: list[DutyRoom]) -> list[DutyRoom]:
+        if len({item.room for item in value}) != len(value):
+            raise ValueError("комната в списке один раз")
+        return value
+
+
+class DutyInstruction(Strict):
+    zones: list[DutyZone] = Field(min_length=1, max_length=MAX_DUTY_ZONES)
+    updated_at: datetime
+    updated_by: str | None = Field(default=None, max_length=200)
+
+
 # ── Служебное ────────────────────────────────────────────────────────────────
 
 
@@ -498,5 +537,7 @@ SCHEMAS = {
     "round.roster": RoundRoster,
     "round.schedule": RoundSchedule,
     "round.extended": RoundExtended,
+    "duty.entrance": DutyEntrance,
+    "duty.instruction": DutyInstruction,
     "message.stored": MessageStored,
 }

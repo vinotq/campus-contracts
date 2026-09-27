@@ -135,6 +135,7 @@ class ResidentRole(StrEnum):
     ROUNDS = "rounds"
     #: Медиа: снимает и пишет про жизнь кампуса. Ручек обхода не открывает.
     MEDIA = "media"
+    HEADMAN = "headman"
 
 
 class RoundMark(StrEnum):

@@ -183,6 +183,8 @@ WITHOUT_PERSON = frozenset({
     "round.submitted",
     "scanner.updated",
     "linen.schedule",
+    "duty.entrance",
+    "duty.instruction",
 })
 
 
