@@ -118,6 +118,7 @@ ENFORCED = frozenset({
     "duty.entrance",
     "duty.instruction",
     "duty.instruction_edited",
+    "ticket.checked",
 })
 
 

@@ -259,6 +259,12 @@ UPSTREAM = {
         },
     },
     "ticket.withdrawn": {"ticket_ref": "018f2c5e-0000-7000-8000-000000000001"},
+    "ticket.checked": {
+        "ticket_ref": "018f2c5e-0000-7000-8000-000000000001",
+        "item_ref": "018f2c5e-0000-7000-8000-000000000002",
+        "done": False,
+        "checked_at": "2026-09-30T10:15:00+03:00",
+    },
     "leave.submitted": {
         "application_ref": "018f2c5e-0000-7000-8000-000000000003",
         "number": "В-25-145",

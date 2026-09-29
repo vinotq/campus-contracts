@@ -56,6 +56,16 @@ class TicketWithdrawn(Strict):
     ticket_ref: str = Field(max_length=64)
 
 
+class TicketChecked(Strict):
+    """Ответ студента, сделали ли заявку. `done=False` возвращает её в очередь повторной подачи."""
+
+    ticket_ref: str = Field(max_length=64)
+    #: Подзаявка, о которой ответ. Пусто: ответ обо всей заявке.
+    item_ref: str | None = Field(default=None, max_length=64)
+    done: bool
+    checked_at: datetime
+
+
 class LeaveSubmitted(Strict):
     """Заявление на выход.
 
@@ -233,6 +243,7 @@ SCHEMAS = {
     "ticket.created": TicketCreated,
     "ticket.item_added": TicketItemAdded,
     "ticket.withdrawn": TicketWithdrawn,
+    "ticket.checked": TicketChecked,
     "leave.submitted": LeaveSubmitted,
     "pass.submitted": PassSubmitted,
     "application.withdrawn": ApplicationWithdrawn,
