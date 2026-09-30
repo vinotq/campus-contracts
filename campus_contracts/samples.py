@@ -84,6 +84,7 @@ DOWNSTREAM = {
         "item_ref": "018f2c5e-0000-7000-8000-000000000002",
         "status": "in_progress",
         "note": "Сантехник придёт после обеда",
+        "ask_at": "2026-10-01T18:00:00+03:00",
     },
     "leave.status_changed": {
         "application_ref": "018f2c5e-0000-7000-8000-000000000003",

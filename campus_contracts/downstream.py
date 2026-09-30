@@ -168,6 +168,9 @@ class TicketStatusChanged(Strict):
     status: ItemStatus
     note: str | None = Field(default=None, max_length=2000)
     reject_reason: str | None = Field(default=None, max_length=2000)
+    #: Когда кабинет спрашивает студента, сделали ли. Едет при `in_progress`;
+    #: новое значение у той же позиции значит, что администратор перенёс вопрос.
+    ask_at: datetime | None = None
 
 
 class ApplicationStatusChanged(Strict):
