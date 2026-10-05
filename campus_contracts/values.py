@@ -136,6 +136,25 @@ class ResidentRole(StrEnum):
     #: Медиа: снимает и пишет про жизнь кампуса. Ручек обхода не открывает.
     MEDIA = "media"
     HEADMAN = "headman"
+    DUTY_ALL = "duty_all"
+    ROUNDS_ALL = "rounds_all"
+    POSTS_ALL = "posts_all"
+    MEDIA_REVIEW = "media_review"
+
+
+RESIDENT_RIGHTS = (
+    ResidentRole.DUTY_ALL,
+    ResidentRole.ROUNDS_ALL,
+    ResidentRole.POSTS_ALL,
+    ResidentRole.MEDIA_REVIEW,
+)
+
+
+class MediaRequestStatus(StrEnum):
+    SENT = "sent"
+    IN_WORK = "in_work"
+    READY = "ready"
+    PUBLISHED = "published"
 
 
 class RoundMark(StrEnum):

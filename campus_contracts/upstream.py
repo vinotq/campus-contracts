@@ -9,9 +9,10 @@ from datetime import date, datetime, time
 
 from pydantic import Field
 
+from campus_contracts.downstream import MAX_MEDIA_PHOTOS, MAX_MEDIA_TEXT
 from campus_contracts.duty import MAX_DUTY_ZONES, DutyZone
 from campus_contracts.envelope import MAX_ROUND_PEOPLE, Strict
-from campus_contracts.values import RoundMark
+from campus_contracts.values import MediaRequestStatus, RoundMark
 
 #: Больше гостей за раз в пропуск не пускают.
 MAX_VISITORS = 10
@@ -238,6 +239,16 @@ class DutyInstructionEdited(Strict):
     edited_at: datetime
 
 
+class MediaRequestStatusChanged(Strict):
+    request_ref: str = Field(min_length=1, max_length=64)
+    status: MediaRequestStatus
+    assignee: str | None = Field(default=None, max_length=200)
+    text: str | None = Field(default=None, max_length=MAX_MEDIA_TEXT)
+    photos: list[str] = Field(default_factory=list, max_length=MAX_MEDIA_PHOTOS)
+    post_url: str | None = Field(default=None, max_length=500)
+    changed_at: datetime
+
+
 #: Тип сообщения → схема тела.
 SCHEMAS = {
     "ticket.created": TicketCreated,
@@ -254,4 +265,5 @@ SCHEMAS = {
     "round.readiness": RoundReadiness,
     "round.submitted": RoundSubmitted,
     "duty.instruction_edited": DutyInstructionEdited,
+    "media.request_status_changed": MediaRequestStatusChanged,
 }

@@ -153,6 +153,10 @@ DOWNSTREAM = {
         "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
         "roles": ["rounds"],
     },
+    "account.badges_updated": {
+        "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
+        "badges": ["Тестировщик"],
+    },
     "round.assignment": {
         "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
         "round_date": "2026-08-12",
@@ -228,6 +232,23 @@ DOWNSTREAM = {
         "entrance": "2",
         "closes_at": "2026-08-13T00:30:00+03:00",
         "extended_by": "Ночной воспитатель корпуса 8",
+    },
+    "media.request_created": {
+        "request_ref": "018f2c5e-0000-7000-8000-000000000021",
+        "number": "М-26-12",
+        "title": "Мастер-класс по керамике",
+        "description": "Лепим кружки, обжиг на следующей неделе",
+        "event_at": "2026-10-10T18:00:00+03:00",
+        "place": "Гостиная корпуса 8",
+        "organizer": "Иванова Мария Петровна",
+        "note": "Нужны фото процесса, не только итог",
+        "created_at": "2026-10-02T12:00:00+03:00",
+    },
+    "media.request_withdrawn": {"request_ref": "018f2c5e-0000-7000-8000-000000000021"},
+    "media.forms": {
+        "forms": [
+            {"title": "Заявка на мероприятие", "url": "https://forms.yandex.ru/u/abc123/"},
+        ],
     },
     "message.stored": {"message_id": "018f2c5e-0000-7000-8000-000000000005"},
 }
@@ -352,6 +373,15 @@ UPSTREAM = {
                 "marked_by": None,
             },
         ],
+    },
+    "media.request_status_changed": {
+        "request_ref": "018f2c5e-0000-7000-8000-000000000021",
+        "status": "ready",
+        "assignee": "Ветрова А. И.",
+        "text": "В субботу в гостиной восьмого корпуса лепили кружки.",
+        "photos": ["018f2c5e-0000-7000-8000-000000000031"],
+        "post_url": None,
+        "changed_at": "2026-10-11T12:00:00+03:00",
     },
 }
 

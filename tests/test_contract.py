@@ -185,6 +185,7 @@ WITHOUT_PERSON = frozenset({
     "linen.schedule",
     "duty.entrance",
     "duty.instruction",
+    "media.forms",
 })
 
 

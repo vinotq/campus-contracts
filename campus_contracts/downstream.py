@@ -276,11 +276,12 @@ class ProfileChangeResolved(Strict):
 
 
 class ScannerUpdated(Strict):
-    """Учётка сканера прачечной: снимок целиком.
+    """Станция прачечной: снимок целиком.
 
-    Заводит её сотрудник в АСПиРС, а входят ею на станции в кабинете. В
-    АСПиРС она не открывает ничего, поэтому пароль там не хранится вовсе:
-    уезжает argon2id-хеш, и только когда пароль задан заново.
+    Заводит её сотрудник в АСПиРС, а подключают в кабинете кодом на 8 цифр.
+    В АСПиРС она не открывает ничего, поэтому код там не хранится вовсе:
+    в `password_hash` уезжает его argon2id-хеш, и только когда код выдан
+    заново.
     """
 
     login: str = Field(min_length=3, max_length=32, pattern=r"^[a-z0-9._-]+$")
@@ -314,6 +315,24 @@ class AccountRolesUpdated(Strict):
 
     aspirs_ref: str = Field(max_length=64)
     roles: list[ResidentRole] = Field(default_factory=list, max_length=16)
+
+
+MAX_BADGES = 16
+MAX_BADGE_LENGTH = 32
+
+
+class AccountBadgesUpdated(Strict):
+    aspirs_ref: str = Field(max_length=64)
+    badges: list[str] = Field(default_factory=list, max_length=MAX_BADGES)
+
+    @field_validator("badges")
+    @classmethod
+    def _labels(cls, value: list[str]) -> list[str]:
+        if any(not label.strip() or len(label) > MAX_BADGE_LENGTH for label in value):
+            raise ValueError(f"подпись значка от 1 до {MAX_BADGE_LENGTH} знаков")
+        if len(set(value)) != len(value):
+            raise ValueError("значок в списке один раз")
+        return value
 
 
 # ── Обход ────────────────────────────────────────────────────────────────────
@@ -499,6 +518,38 @@ class DutyInstruction(Strict):
     updated_by: str | None = Field(default=None, max_length=200)
 
 
+MAX_MEDIA_TEXT = 8000
+MAX_MEDIA_PHOTOS = 10
+
+
+class MediaRequestCreated(Strict):
+    request_ref: str = Field(min_length=1, max_length=64)
+    number: str = Field(min_length=1, max_length=32)
+    title: str = Field(min_length=1, max_length=200)
+    description: str = Field(default="", max_length=4000)
+    event_at: datetime
+    place: str = Field(min_length=1, max_length=200)
+    organizer: str = Field(min_length=1, max_length=200)
+    note: str | None = Field(default=None, max_length=2000)
+    created_at: datetime
+
+
+class MediaRequestWithdrawn(Strict):
+    request_ref: str = Field(min_length=1, max_length=64)
+
+
+MAX_MEDIA_FORMS = 20
+
+
+class MediaFormLink(Strict):
+    title: str = Field(min_length=1, max_length=120)
+    url: str = Field(min_length=8, max_length=500, pattern=r"^https://\S+$")
+
+
+class MediaForms(Strict):
+    forms: list[MediaFormLink] = Field(default_factory=list, max_length=MAX_MEDIA_FORMS)
+
+
 # ── Служебное ────────────────────────────────────────────────────────────────
 
 
@@ -534,6 +585,7 @@ SCHEMAS = {
     "account.blocked": AccountBlocked,
     "account.unblocked": AccountBlocked,
     "account.roles_updated": AccountRolesUpdated,
+    "account.badges_updated": AccountBadgesUpdated,
     "scanner.updated": ScannerUpdated,
     "profile.change_resolved": ProfileChangeResolved,
     "round.assignment": RoundAssignment,
@@ -542,5 +594,8 @@ SCHEMAS = {
     "round.extended": RoundExtended,
     "duty.entrance": DutyEntrance,
     "duty.instruction": DutyInstruction,
+    "media.request_created": MediaRequestCreated,
+    "media.request_withdrawn": MediaRequestWithdrawn,
+    "media.forms": MediaForms,
     "message.stored": MessageStored,
 }
