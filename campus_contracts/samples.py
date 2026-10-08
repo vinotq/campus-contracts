@@ -336,6 +336,12 @@ UPSTREAM = {
         "by_proxy": True,
         "station": "Прачечная",
     },
+    "station.state": {
+        "login": "station-0a1b2c3d4e5f",
+        "paired": True,
+        "online": False,
+        "seen_at": "2026-10-08T16:40:00+03:00",
+    },
     "device.registered": {"aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv"},
     "round.readiness": {
         "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",

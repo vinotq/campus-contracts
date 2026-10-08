@@ -150,6 +150,19 @@ class LinenCollected(Strict):
     station: str = Field(min_length=1, max_length=64)
 
 
+class StationState(Strict):
+    """Связь со станцией прачечной.
+
+    Кабинет сообщает о переменах, а не о каждом обращении станции: подключилась
+    по коду, пропала, вернулась. `seen_at` – последнее обращение станции.
+    """
+
+    login: str = Field(min_length=1, max_length=32)
+    paired: bool
+    online: bool
+    seen_at: datetime | None = None
+
+
 class ProfileChangeRequested(Strict):
     """Студент просит поправить карточку.
 
@@ -262,6 +275,7 @@ SCHEMAS = {
     "application.withdrawn": ApplicationWithdrawn,
     "linen.debt_acknowledged": LinenDebtAcknowledged,
     "linen.collected": LinenCollected,
+    "station.state": StationState,
     "profile.change_requested": ProfileChangeRequested,
     "device.registered": DeviceRegistered,
     "round.readiness": RoundReadiness,
