@@ -83,7 +83,9 @@ class LeaveSubmitted(Strict):
     to_at: datetime | None = None
     reason: str | None = Field(default=None, max_length=2000)
     scan: str | None = Field(default=None, max_length=64)
-    #: Согласие родителя голосом в чате вместо бумаги.
+    #: Кружок от родителя: видео, где он зачитывает согласие.
+    video: str | None = Field(default=None, max_length=64)
+    #: Согласие родителя голосом в чате вместо бумаги. С 1.19.0 не отправляется.
     voice_in_chat: bool = False
 
 
