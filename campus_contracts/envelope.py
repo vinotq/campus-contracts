@@ -7,6 +7,7 @@
 """
 
 from datetime import datetime
+from typing import Annotated
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -18,6 +19,13 @@ SCHEMA_VERSION = 1
 #: то, чтобы одно кривое сообщение не съело память принимающей стороне.
 MAX_MESSAGE_BYTES = 256 * 1024
 MAX_BATCH = 100
+
+#: Элемент списка ключей и кодов. Потолок на список без потолка на элемент
+#: ничего не ограничивает: шестнадцать строк по 16 КБ проходят проверку и
+#: доезжают до базы принимающей стороны.
+Key = Annotated[str, Field(min_length=1, max_length=64)]
+#: Название учебной группы. В АСПиРС оно до ста знаков, запас на импорт.
+GroupName = Annotated[str, Field(min_length=1, max_length=200)]
 
 #: Столько человек помещается в один подъезд. Потолок общий на оба направления:
 #: сколько людей уехало вниз списком обхода, столько отметок вернётся наверх.
@@ -46,9 +54,9 @@ class Strict(BaseModel):
 class Audience(Strict):
     """Кому адресована публикация. Пустые списки — «всем»."""
 
-    buildings: list[str] = Field(default_factory=list, max_length=64)
+    buildings: list[Key] = Field(default_factory=list, max_length=64)
     courses: list[int] = Field(default_factory=list, max_length=16)
-    groups: list[str] = Field(default_factory=list, max_length=256)
+    groups: list[GroupName] = Field(default_factory=list, max_length=256)
 
 
 class Envelope(Strict):

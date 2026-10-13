@@ -15,6 +15,7 @@ from campus_contracts.envelope import (
     MAX_DUTY_ROOMS,
     MAX_ROUND_PEOPLE,
     Audience,
+    Key,
     Strict,
 )
 from campus_contracts.values import (
@@ -51,7 +52,7 @@ class PostPublished(Strict):
     rubric: str | None = Field(default=None, max_length=48)
     #: Рубрик у публикации бывает несколько: «Двор» и «Важно» одновременно.
     #: Значения из справочника АСПиРС, свободного ввода нет.
-    rubrics: list[str] = Field(default_factory=list, max_length=8)
+    rubrics: list[Key] = Field(default_factory=list, max_length=8)
     author_label: str | None = Field(default=None, max_length=160)
     is_urgent: bool = False
     #: Только справочная: адрес раздела и порядок в списке.
@@ -61,7 +62,7 @@ class PostPublished(Strict):
     audience: Audience = Field(default_factory=Audience)
     #: Галерея по порядку. Здесь только идентификаторы: файлы идут отдельным
     #: потоком по одноразовой ссылке, вкладывать их в сообщение нельзя.
-    image_ids: list[str] = Field(default_factory=list, max_length=32)
+    image_ids: list[Key] = Field(default_factory=list, max_length=32)
 
 
 class PostDeleted(Strict):

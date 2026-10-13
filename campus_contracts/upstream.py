@@ -11,7 +11,7 @@ from pydantic import Field
 
 from campus_contracts.downstream import MAX_MEDIA_PHOTOS, MAX_MEDIA_TEXT
 from campus_contracts.duty import MAX_DUTY_ZONES, DutyZone
-from campus_contracts.envelope import MAX_ROUND_PEOPLE, Strict
+from campus_contracts.envelope import MAX_ROUND_PEOPLE, Key, Strict
 from campus_contracts.values import MediaRequestStatus, RoundMark
 
 #: Больше гостей за раз в пропуск не пускают.
@@ -27,7 +27,7 @@ class TicketItem(Strict):
     is_urgent: bool = False
     #: Идентификаторы снимков. Файлы идут отдельным потоком по одноразовой
     #: ссылке: вложений в сообщении контракт не допускает.
-    photos: list[str] = Field(default_factory=list, max_length=16)
+    photos: list[Key] = Field(default_factory=list, max_length=16)
 
 
 class TicketCreated(Strict):
@@ -259,7 +259,7 @@ class MediaRequestStatusChanged(Strict):
     status: MediaRequestStatus
     assignee: str | None = Field(default=None, max_length=200)
     text: str | None = Field(default=None, max_length=MAX_MEDIA_TEXT)
-    photos: list[str] = Field(default_factory=list, max_length=MAX_MEDIA_PHOTOS)
+    photos: list[Key] = Field(default_factory=list, max_length=MAX_MEDIA_PHOTOS)
     post_url: str | None = Field(default=None, max_length=500)
     changed_at: datetime
 

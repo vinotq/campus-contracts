@@ -216,3 +216,42 @@ def test_a_person_inside_lists_is_also_an_aspirs_ref():
     for field in nested:
         item = field.annotation.__args__[0]
         assert "aspirs_ref" in item.model_fields, item.__name__
+
+
+LONG = "я" * 201
+
+
+@pytest.mark.parametrize(
+    ("direction", "message_type", "path"),
+    [
+        (Direction.UPSTREAM, "ticket.created", ("items", 0, "photos")),
+        (Direction.UPSTREAM, "media.request_status_changed", ("photos",)),
+        (Direction.DOWNSTREAM, "news.published", ("rubrics",)),
+        (Direction.DOWNSTREAM, "news.published", ("image_ids",)),
+    ],
+)
+def test_a_list_element_has_its_own_ceiling(direction, message_type, path):
+    """Потолок на число элементов без потолка на сам элемент ничего не ограничивает."""
+    body = json.loads(json.dumps(SAMPLES[direction][message_type]))
+    target = body
+    for step in path[:-1]:
+        target = target[step]
+    target[path[-1]] = ["ok"]
+    validate(direction, message_type, body)
+
+    target[path[-1]] = [LONG]
+    with pytest.raises(ValidationError):
+        validate(direction, message_type, body)
+
+    target[path[-1]] = [""]
+    with pytest.raises(ValidationError):
+        validate(direction, message_type, body)
+
+
+@pytest.mark.parametrize(("field", "fits"), [("buildings", "8"), ("groups", "К0709-23/1")])
+def test_audience_elements_have_a_ceiling(field, fits):
+    from campus_contracts.envelope import Audience
+
+    Audience(**{field: [fits]})
+    with pytest.raises(ValidationError):
+        Audience(**{field: [LONG]})
