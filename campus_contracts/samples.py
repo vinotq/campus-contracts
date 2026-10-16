@@ -85,6 +85,14 @@ DOWNSTREAM = {
         "status": "in_progress",
         "note": "Сантехник придёт после обеда",
         "ask_at": "2026-10-01T18:00:00+03:00",
+        "postponed_until": "2026-10-01",
+    },
+    "ticket.message": {
+        "ticket_ref": "018f2c5e-0000-7000-8000-000000000001",
+        "message_ref": "018f2c5e-0000-7000-8000-000000000011",
+        "text": "Мастер будет завтра утром",
+        "author": "Воспитатели",
+        "sent_at": "2026-09-30T09:41:00+03:00",
     },
     "leave.status_changed": {
         "application_ref": "018f2c5e-0000-7000-8000-000000000003",
@@ -258,8 +266,13 @@ UPSTREAM = {
         "ticket_ref": "018f2c5e-0000-7000-8000-000000000001",
         "number": "Р-25-802",
         "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
-        "place": "room",
-        "place_note": "Кухня блока, дальняя раковина",
+        "place": "common",
+        "place_note": "Гамма 8 1 5 кухня",
+        "building": "8",
+        "entrance": "1",
+        "floor": 5,
+        "room": None,
+        "spot": "kitchen",
         "items": [
             {
                 "ref": "018f2c5e-0000-7000-8000-000000000002",
@@ -281,6 +294,12 @@ UPSTREAM = {
         },
     },
     "ticket.withdrawn": {"ticket_ref": "018f2c5e-0000-7000-8000-000000000001"},
+    "ticket.message": {
+        "ticket_ref": "018f2c5e-0000-7000-8000-000000000001",
+        "message_ref": "018f2c5e-0000-7000-8000-000000000012",
+        "text": "Буду дома до 11",
+        "sent_at": "2026-09-30T09:55:00+03:00",
+    },
     "ticket.checked": {
         "ticket_ref": "018f2c5e-0000-7000-8000-000000000001",
         "item_ref": "018f2c5e-0000-7000-8000-000000000002",

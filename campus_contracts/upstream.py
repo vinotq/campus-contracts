@@ -12,7 +12,7 @@ from pydantic import Field
 from campus_contracts.downstream import MAX_MEDIA_PHOTOS, MAX_MEDIA_TEXT
 from campus_contracts.duty import MAX_DUTY_ZONES, DutyZone
 from campus_contracts.envelope import MAX_ROUND_PEOPLE, Key, Strict
-from campus_contracts.values import MediaRequestStatus, RoundMark
+from campus_contracts.values import MediaRequestStatus, RoundMark, TicketSpot
 
 #: Больше гостей за раз в пропуск не пускают.
 MAX_VISITORS = 10
@@ -43,12 +43,24 @@ class TicketCreated(Strict):
     aspirs_ref: str = Field(max_length=64)
     place: str = Field(max_length=32)
     place_note: str | None = Field(default=None, max_length=255)
+    building: str | None = Field(default=None, max_length=16)
+    entrance: str | None = Field(default=None, max_length=16)
+    floor: int | None = Field(default=None, ge=1, le=99)
+    room: str | None = Field(default=None, max_length=16)
+    spot: TicketSpot | None = None
     items: list[TicketItem] = Field(min_length=1, max_length=20)
 
 
 class TicketItemAdded(Strict):
     ticket_ref: str = Field(max_length=64)
     item: TicketItem
+
+
+class TicketMessageSent(Strict):
+    ticket_ref: str = Field(max_length=64)
+    message_ref: str = Field(max_length=64)
+    text: str = Field(min_length=1, max_length=2000)
+    sent_at: datetime
 
 
 class TicketWithdrawn(Strict):
@@ -270,6 +282,7 @@ SCHEMAS = {
     "ticket.item_added": TicketItemAdded,
     "ticket.withdrawn": TicketWithdrawn,
     "ticket.checked": TicketChecked,
+    "ticket.message": TicketMessageSent,
     "leave.submitted": LeaveSubmitted,
     "pass.submitted": PassSubmitted,
     "application.withdrawn": ApplicationWithdrawn,

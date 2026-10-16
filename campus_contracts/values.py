@@ -28,6 +28,29 @@ class ApplicationStatus(StrEnum):
     WITHDRAWN = "withdrawn"
 
 
+class TicketSpot(StrEnum):
+    COWORKING = "coworking"
+    KITCHEN = "kitchen"
+    LAUNDRY = "laundry"
+    SHOWER = "shower"
+    TOILET = "toilet"
+    CORRIDOR = "corridor"
+    LIFT = "lift"
+    STAIRS = "stairs"
+
+
+TICKET_SPOT_LABELS = {
+    TicketSpot.COWORKING: "коворкинг",
+    TicketSpot.KITCHEN: "кухня",
+    TicketSpot.LAUNDRY: "прачечная",
+    TicketSpot.SHOWER: "душевая",
+    TicketSpot.TOILET: "санузел",
+    TicketSpot.CORRIDOR: "коридор",
+    TicketSpot.LIFT: "лифт",
+    TicketSpot.STAIRS: "лестница",
+}
+
+
 class ItemStatus(StrEnum):
     """Статус позиции в заявке на ремонт.
 

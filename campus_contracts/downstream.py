@@ -172,6 +172,15 @@ class TicketStatusChanged(Strict):
     #: Когда кабинет спрашивает студента, сделали ли. Едет при `in_progress`;
     #: новое значение у той же позиции значит, что администратор перенёс вопрос.
     ask_at: datetime | None = None
+    postponed_until: date | None = None
+
+
+class TicketMessage(Strict):
+    ticket_ref: str = Field(max_length=64)
+    message_ref: str = Field(max_length=64)
+    text: str = Field(min_length=1, max_length=2000)
+    author: str = Field(min_length=1, max_length=200)
+    sent_at: datetime
 
 
 class ApplicationStatusChanged(Strict):
@@ -575,6 +584,7 @@ SCHEMAS = {
     "home.layout": HomeLayout,
     "profile.updated": ProfileUpdated,
     "ticket.status_changed": TicketStatusChanged,
+    "ticket.message": TicketMessage,
     "leave.status_changed": ApplicationStatusChanged,
     "pass.status_changed": ApplicationStatusChanged,
     "linen.granted": LinenGranted,
