@@ -29,6 +29,7 @@ from campus_contracts.values import (
     ProfileField,
     ResidencyStatus,
     ResidentRole,
+    TicketSpot,
 )
 
 # ── Публикации ───────────────────────────────────────────────────────────────
@@ -173,6 +174,24 @@ class TicketStatusChanged(Strict):
     #: новое значение у той же позиции значит, что администратор перенёс вопрос.
     ask_at: datetime | None = None
     postponed_until: date | None = None
+
+
+class TicketFiled(Strict):
+    ticket_ref: str = Field(max_length=64)
+    item_ref: str = Field(max_length=64)
+    number: str = Field(max_length=32)
+    aspirs_ref: str = Field(max_length=64)
+    place: str = Field(max_length=32)
+    place_note: str | None = Field(default=None, max_length=255)
+    building: str | None = Field(default=None, max_length=16)
+    entrance: str | None = Field(default=None, max_length=16)
+    floor: int | None = Field(default=None, ge=1, le=99)
+    room: str | None = Field(default=None, max_length=16)
+    spot: TicketSpot | None = None
+    text: str = Field(min_length=1, max_length=2000)
+    is_urgent: bool = False
+    author: str = Field(min_length=1, max_length=200)
+    filed_at: datetime
 
 
 class TicketMessage(Strict):
@@ -585,6 +604,7 @@ SCHEMAS = {
     "profile.updated": ProfileUpdated,
     "ticket.status_changed": TicketStatusChanged,
     "ticket.message": TicketMessage,
+    "ticket.filed": TicketFiled,
     "leave.status_changed": ApplicationStatusChanged,
     "pass.status_changed": ApplicationStatusChanged,
     "linen.granted": LinenGranted,

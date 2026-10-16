@@ -126,6 +126,7 @@ ENFORCED = frozenset({
     "media.request_status_changed",
     "media.forms",
     "ticket.message",
+    "ticket.filed",
 })
 
 
