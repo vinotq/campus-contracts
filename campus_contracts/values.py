@@ -47,8 +47,18 @@ TICKET_SPOT_LABELS = {
     TicketSpot.TOILET: "санузел",
     TicketSpot.CORRIDOR: "коридор",
     TicketSpot.LIFT: "лифт",
-    TicketSpot.STAIRS: "лестница",
+    TicketSpot.STAIRS: "лестничный марш",
 }
+
+TICKET_SPOT_CHOICES = (
+    TicketSpot.COWORKING,
+    TicketSpot.KITCHEN,
+    TicketSpot.LAUNDRY,
+    TicketSpot.TOILET,
+    TicketSpot.CORRIDOR,
+    TicketSpot.LIFT,
+    TicketSpot.STAIRS,
+)
 
 
 class ItemStatus(StrEnum):
