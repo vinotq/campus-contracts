@@ -7,7 +7,7 @@
 
 from datetime import date, datetime, time
 
-from pydantic import Field, field_validator
+from pydantic import Field, field_validator, model_validator
 
 from campus_contracts.duty import MAX_DUTY_ZONES, DutyZone
 from campus_contracts.envelope import (
@@ -194,12 +194,30 @@ class TicketFiled(Strict):
     filed_at: datetime
 
 
+#: Снимков в одном сообщении чата заявки, в обе стороны.
+MAX_CHAT_PHOTOS = 5
+
+
 class TicketMessage(Strict):
+    """Сообщение сотрудника в чат заявки.
+
+    Снимки едут ключами: кабинет забирает их у Шлюза по `/ticket-photos/{key}`
+    тем же порядком, что снимки публикаций. Текст может быть пустым, когда есть
+    хотя бы один снимок: «починили» иногда это просто фото.
+    """
+
     ticket_ref: str = Field(max_length=64)
     message_ref: str = Field(max_length=64)
-    text: str = Field(min_length=1, max_length=2000)
+    text: str = Field(default="", max_length=2000)
+    photos: list[Key] = Field(default_factory=list, max_length=MAX_CHAT_PHOTOS)
     author: str = Field(min_length=1, max_length=200)
     sent_at: datetime
+
+    @model_validator(mode="after")
+    def _text_or_photo(self) -> "TicketMessage":
+        if not self.text.strip() and not self.photos:
+            raise ValueError("нужен текст или хотя бы один снимок")
+        return self
 
 
 class ApplicationStatusChanged(Strict):

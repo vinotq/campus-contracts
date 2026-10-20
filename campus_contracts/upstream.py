@@ -7,9 +7,9 @@
 
 from datetime import date, datetime, time
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
-from campus_contracts.downstream import MAX_MEDIA_PHOTOS, MAX_MEDIA_TEXT
+from campus_contracts.downstream import MAX_CHAT_PHOTOS, MAX_MEDIA_PHOTOS, MAX_MEDIA_TEXT
 from campus_contracts.duty import MAX_DUTY_ZONES, DutyZone
 from campus_contracts.envelope import MAX_ROUND_PEOPLE, Key, Strict
 from campus_contracts.values import MediaRequestStatus, RoundMark, TicketSpot
@@ -57,10 +57,23 @@ class TicketItemAdded(Strict):
 
 
 class TicketMessageSent(Strict):
+    """Сообщение студента в чат заявки.
+
+    Снимки идут файлами вида `ticket_photo` тем же потоком, что фото поломок, в
+    сообщении только их ключи. Текст может быть пустым при хотя бы одном снимке.
+    """
+
     ticket_ref: str = Field(max_length=64)
     message_ref: str = Field(max_length=64)
-    text: str = Field(min_length=1, max_length=2000)
+    text: str = Field(default="", max_length=2000)
+    photos: list[Key] = Field(default_factory=list, max_length=MAX_CHAT_PHOTOS)
     sent_at: datetime
+
+    @model_validator(mode="after")
+    def _text_or_photo(self) -> "TicketMessageSent":
+        if not self.text.strip() and not self.photos:
+            raise ValueError("нужен текст или хотя бы один снимок")
+        return self
 
 
 class TicketWithdrawn(Strict):

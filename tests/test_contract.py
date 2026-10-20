@@ -21,6 +21,7 @@ from campus_contracts import (
     schema_for,
     validate,
 )
+from campus_contracts import downstream, upstream
 from campus_contracts.envelope import MAX_ROUND_PEOPLE
 from campus_contracts.samples import SAMPLES
 from campus_contracts.values import PersonFlag
@@ -255,3 +256,17 @@ def test_audience_elements_have_a_ceiling(field, fits):
     Audience(**{field: [fits]})
     with pytest.raises(ValidationError):
         Audience(**{field: [LONG]})
+
+
+@pytest.mark.parametrize(
+    ("direction", "model"),
+    [(Direction.DOWNSTREAM, downstream.TicketMessage), (Direction.UPSTREAM, upstream.TicketMessageSent)],
+)
+def test_a_chat_message_needs_text_or_a_photo(direction, model):
+    base = dict(SAMPLES[direction]["ticket.message"])
+    assert model.model_validate({**base, "text": "", "photos": ["k1"]}).text == ""
+    assert model.model_validate({**base, "photos": []}).photos == []
+    with pytest.raises(ValidationError):
+        model.model_validate({**base, "text": "  ", "photos": []})
+    with pytest.raises(ValidationError):
+        model.model_validate({**base, "photos": [f"k{i}" for i in range(downstream.MAX_CHAT_PHOTOS + 1)]})
