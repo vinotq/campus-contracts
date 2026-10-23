@@ -128,11 +128,6 @@ DOWNSTREAM = {
         "method": "qr",
         "granted_by": "Кастелянша корпуса 12",
     },
-    "linen.debt_closed": {
-        "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
-        "period_start": "2026-08-03",
-        "closed_at": "2026-08-10T12:00:00+03:00",
-    },
     "linen.revoked": {
         "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
         "period_start": "2026-08-03",
@@ -144,10 +139,6 @@ DOWNSTREAM = {
         "closes_at": "19:00",
         "break_from": "13:00",
         "break_to": "14:00",
-    },
-    "linen.debt_created": {
-        "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
-        "period_start": "2026-07-27",
     },
     "account.invited": {
         "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
@@ -301,16 +292,6 @@ UPSTREAM = {
             }
         ],
     },
-    "ticket.item_added": {
-        "ticket_ref": "018f2c5e-0000-7000-8000-000000000001",
-        "item": {
-            "ref": "018f2c5e-0000-7000-8000-000000000006",
-            "position": 2,
-            "text": "И розетка искрит",
-            "is_urgent": True,
-            "photos": [],
-        },
-    },
     "ticket.withdrawn": {"ticket_ref": "018f2c5e-0000-7000-8000-000000000001"},
     "ticket.message": {
         "ticket_ref": "018f2c5e-0000-7000-8000-000000000001",
@@ -355,10 +336,6 @@ UPSTREAM = {
         "cars": [{"make": "Lada Vesta", "plate": "А123ВС777"}],
     },
     "application.withdrawn": {"application_ref": "018f2c5e-0000-7000-8000-000000000003"},
-    "linen.debt_acknowledged": {
-        "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
-        "period_start": "2026-07-27",
-    },
     "profile.change_requested": {
         "request_ref": "018f2c5e-0000-7000-8000-000000000009",
         "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",

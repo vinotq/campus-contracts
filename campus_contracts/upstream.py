@@ -51,11 +51,6 @@ class TicketCreated(Strict):
     items: list[TicketItem] = Field(min_length=1, max_length=20)
 
 
-class TicketItemAdded(Strict):
-    ticket_ref: str = Field(max_length=64)
-    item: TicketItem
-
-
 class TicketMessageSent(Strict):
     """Сообщение студента в чат заявки.
 
@@ -151,13 +146,6 @@ class PassSubmitted(Strict):
 
 class ApplicationWithdrawn(Strict):
     application_ref: str = Field(max_length=64)
-
-
-class LinenDebtAcknowledged(Strict):
-    """АСПиРС ищет долг по человеку и периоду: своего номера у кабинета нет."""
-
-    aspirs_ref: str = Field(max_length=64)
-    period_start: date
 
 
 class LinenCollected(Strict):
@@ -292,14 +280,12 @@ class MediaRequestStatusChanged(Strict):
 #: Тип сообщения → схема тела.
 SCHEMAS = {
     "ticket.created": TicketCreated,
-    "ticket.item_added": TicketItemAdded,
     "ticket.withdrawn": TicketWithdrawn,
     "ticket.checked": TicketChecked,
     "ticket.message": TicketMessageSent,
     "leave.submitted": LeaveSubmitted,
     "pass.submitted": PassSubmitted,
     "application.withdrawn": ApplicationWithdrawn,
-    "linen.debt_acknowledged": LinenDebtAcknowledged,
     "linen.collected": LinenCollected,
     "station.state": StationState,
     "profile.change_requested": ProfileChangeRequested,

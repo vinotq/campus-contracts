@@ -245,12 +245,6 @@ class LinenGranted(Strict):
     granted_by: str | None = Field(default=None, max_length=120)
 
 
-class LinenDebtClosed(Strict):
-    aspirs_ref: str = Field(max_length=64)
-    period_start: date
-    closed_at: datetime
-
-
 class LinenRevoked(Strict):
     aspirs_ref: str = Field(max_length=64)
     period_start: date
@@ -276,13 +270,6 @@ class LinenScheduleUpdated(Strict):
         if any(day < 1 or day > 7 for day in value) or len(set(value)) != len(value):
             raise ValueError("дни недели по ISO, от 1 до 7, без повторов")
         return value
-
-
-class LinenDebtCreated(Strict):
-    """Состав долга не передаётся: кабинет его не хранит и не показывает."""
-
-    aspirs_ref: str = Field(max_length=64)
-    period_start: date
 
 
 # ── Кабинеты ─────────────────────────────────────────────────────────────────
@@ -626,10 +613,8 @@ SCHEMAS = {
     "leave.status_changed": ApplicationStatusChanged,
     "pass.status_changed": ApplicationStatusChanged,
     "linen.granted": LinenGranted,
-    "linen.debt_created": LinenDebtCreated,
     "linen.schedule": LinenScheduleUpdated,
     "linen.revoked": LinenRevoked,
-    "linen.debt_closed": LinenDebtClosed,
     "account.invited": AccountInvited,
     "account.blocked": AccountBlocked,
     "account.unblocked": AccountBlocked,
