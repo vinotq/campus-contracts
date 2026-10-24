@@ -350,7 +350,7 @@ UPSTREAM = {
                 "document": "4519 123456",
             }
         ],
-        "cars": [{"make": "Lada Vesta", "plate": "А123ВС777"}],
+        "cars": [{"make": "Lada Vesta", "plate": "А123ВС 777", "color": "белый"}],
     },
     "application.withdrawn": {"application_ref": "018f2c5e-0000-7000-8000-000000000003"},
     "profile.change_requested": {

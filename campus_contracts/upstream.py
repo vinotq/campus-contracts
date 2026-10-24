@@ -131,6 +131,8 @@ class Visitor(Strict):
 class Car(Strict):
     make: str = Field(max_length=100)
     plate: str = Field(min_length=1, max_length=32)
+    #: С 1.23.0: форма допуска на КПП спрашивает цвет отдельной графой.
+    color: str | None = Field(default=None, max_length=40)
 
 
 class PassSubmitted(Strict):
