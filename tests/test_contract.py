@@ -270,3 +270,15 @@ def test_a_chat_message_needs_text_or_a_photo(direction, model):
         model.model_validate({**base, "text": "  ", "photos": []})
     with pytest.raises(ValidationError):
         model.model_validate({**base, "photos": [f"k{i}" for i in range(downstream.MAX_CHAT_PHOTOS + 1)]})
+
+
+def test_an_event_carries_its_time_and_place():
+    body = SAMPLES[Direction.DOWNSTREAM]["event.published"]
+    post = validate(Direction.DOWNSTREAM, "event.published", body)
+    assert post.event.place == "Актовый зал 8 корпуса"
+    assert post.event.starts_at.hour == 18
+
+
+def test_a_news_post_has_no_event():
+    post = validate(Direction.DOWNSTREAM, "news.published", SAMPLES[Direction.DOWNSTREAM]["news.published"])
+    assert post.event is None

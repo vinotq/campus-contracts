@@ -35,6 +35,13 @@ from campus_contracts.values import (
 # ── Публикации ───────────────────────────────────────────────────────────────
 
 
+class PostEvent(Strict):
+    """Когда и где проходит событие. Записи на него в кабинете пока нет."""
+
+    starts_at: datetime
+    place: str = Field(default="", max_length=200)
+
+
 class PostPublished(Strict):
     """Новость, событие или страница справочной.
 
@@ -64,6 +71,8 @@ class PostPublished(Strict):
     #: Галерея по порядку. Здесь только идентификаторы: файлы идут отдельным
     #: потоком по одноразовой ссылке, вкладывать их в сообщение нельзя.
     image_ids: list[Key] = Field(default_factory=list, max_length=32)
+    #: Только событие, с 1.23.0.
+    event: PostEvent | None = None
 
 
 class PostDeleted(Strict):
