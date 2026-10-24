@@ -584,6 +584,38 @@ class MediaForms(Strict):
     forms: list[MediaFormLink] = Field(default_factory=list, max_length=MAX_MEDIA_FORMS)
 
 
+# ── Согласование публикаций ──────────────────────────────────────────────────
+
+MAX_POST_IMAGES = 32
+MAX_REVIEW_COMMENT = 2000
+
+
+class PostReviewRequested(Strict):
+    """Публикация уходит редактору Медиа. В ленту не попадает.
+
+    Аудитория едет подписью и числом: редактору нужно понимать, кому пишут,
+    а не разбирать корпуса и группы.
+    """
+
+    post_ref: Key
+    title: str = Field(min_length=1, max_length=300)
+    body_md: str = Field(max_length=100_000)
+    rubrics: list[Key] = Field(default_factory=list, max_length=8)
+    author: str = Field(min_length=1, max_length=200)
+    author_label: str | None = Field(default=None, max_length=160)
+    audience_label: str = Field(min_length=1, max_length=200)
+    audience_total: int = Field(ge=0)
+    is_urgent: bool = False
+    publish_at: datetime | None = None
+    image_ids: list[Key] = Field(default_factory=list, max_length=MAX_POST_IMAGES)
+    comment: str | None = Field(default=None, max_length=MAX_REVIEW_COMMENT)
+    submitted_at: datetime
+
+
+class PostReviewWithdrawn(Strict):
+    post_ref: Key
+
+
 # ── Служебное ────────────────────────────────────────────────────────────────
 
 
@@ -631,5 +663,7 @@ SCHEMAS = {
     "media.request_created": MediaRequestCreated,
     "media.request_withdrawn": MediaRequestWithdrawn,
     "media.forms": MediaForms,
+    "post.review_requested": PostReviewRequested,
+    "post.review_withdrawn": PostReviewWithdrawn,
     "message.stored": MessageStored,
 }

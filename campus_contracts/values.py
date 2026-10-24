@@ -190,6 +190,11 @@ class MediaRequestStatus(StrEnum):
     PUBLISHED = "published"
 
 
+class PostVerdict(StrEnum):
+    APPROVED = "approved"
+    REWORK = "rework"
+
+
 class RoundMark(StrEnum):
     """Отметка по человеку в обходе.
 

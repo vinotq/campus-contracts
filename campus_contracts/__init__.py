@@ -123,6 +123,11 @@ ENFORCED = frozenset({
     "media.forms",
     "ticket.message",
     "ticket.filed",
+    "post.review_requested",
+    "post.review_withdrawn",
+    "post.reviewed",
+    "post.edited",
+    "media.to_feed",
 })
 
 

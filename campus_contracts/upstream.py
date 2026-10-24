@@ -9,10 +9,16 @@ from datetime import date, datetime, time
 
 from pydantic import Field, model_validator
 
-from campus_contracts.downstream import MAX_CHAT_PHOTOS, MAX_MEDIA_PHOTOS, MAX_MEDIA_TEXT
+from campus_contracts.downstream import (
+    MAX_CHAT_PHOTOS,
+    MAX_MEDIA_PHOTOS,
+    MAX_MEDIA_TEXT,
+    MAX_POST_IMAGES,
+    MAX_REVIEW_COMMENT,
+)
 from campus_contracts.duty import MAX_DUTY_ZONES, DutyZone
 from campus_contracts.envelope import MAX_ROUND_PEOPLE, Key, Strict
-from campus_contracts.values import MediaRequestStatus, RoundMark, TicketSpot
+from campus_contracts.values import MediaRequestStatus, PostVerdict, RoundMark, TicketSpot
 
 #: Больше гостей за раз в пропуск не пускают.
 MAX_VISITORS = 10
@@ -277,6 +283,57 @@ class MediaRequestStatusChanged(Strict):
     changed_at: datetime
 
 
+class PostImageRef(Strict):
+    """Картинка публикации после редактора: прежняя из АСПиРС или новая из кабинета.
+
+    Новая едет файлом вида `post_image` под тем же `file_id`.
+    """
+
+    aspirs_id: Key | None = None
+    file_id: Key | None = None
+
+    @model_validator(mode="after")
+    def exactly_one(self) -> "PostImageRef":
+        if (self.aspirs_id is None) == (self.file_id is None):
+            raise ValueError("нужен ровно один из aspirs_id и file_id")
+        return self
+
+
+class PostReviewed(Strict):
+    """Решение редактора Медиа. Заголовок, текст и картинки едут итоговые."""
+
+    post_ref: Key
+    verdict: PostVerdict
+    comment: str | None = Field(default=None, max_length=MAX_REVIEW_COMMENT)
+    reviewer: str = Field(min_length=1, max_length=200)
+    title: str = Field(min_length=1, max_length=300)
+    body_md: str = Field(max_length=100_000)
+    images: list[PostImageRef] = Field(default_factory=list, max_length=MAX_POST_IMAGES)
+    decided_at: datetime
+
+
+class PostEdited(Strict):
+    """Правка уже вышедшей публикации редактором Медиа."""
+
+    post_ref: Key
+    editor: str = Field(min_length=1, max_length=200)
+    title: str = Field(min_length=1, max_length=300)
+    body_md: str = Field(max_length=100_000)
+    images: list[PostImageRef] = Field(default_factory=list, max_length=MAX_POST_IMAGES)
+    edited_at: datetime
+
+
+class MediaToFeed(Strict):
+    """Согласованный материал Медиа уходит в ленту Кампуса без второго согласования."""
+
+    request_ref: str = Field(min_length=1, max_length=64)
+    title: str = Field(min_length=1, max_length=300)
+    text: str = Field(min_length=1, max_length=MAX_MEDIA_TEXT)
+    photos: list[Key] = Field(default_factory=list, max_length=MAX_MEDIA_PHOTOS)
+    by: str = Field(min_length=1, max_length=200)
+    requested_at: datetime
+
+
 #: Тип сообщения → схема тела.
 SCHEMAS = {
     "ticket.created": TicketCreated,
@@ -294,4 +351,7 @@ SCHEMAS = {
     "round.submitted": RoundSubmitted,
     "duty.instruction_edited": DutyInstructionEdited,
     "media.request_status_changed": MediaRequestStatusChanged,
+    "media.to_feed": MediaToFeed,
+    "post.reviewed": PostReviewed,
+    "post.edited": PostEdited,
 }

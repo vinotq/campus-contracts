@@ -267,6 +267,22 @@ DOWNSTREAM = {
             {"title": "Заявка на мероприятие", "url": "https://forms.yandex.ru/u/abc123/"},
         ],
     },
+    "post.review_requested": {
+        "post_ref": "412",
+        "title": "Субботник во дворе",
+        "body_md": "Собираемся в субботу в 11 у восьмого корпуса.",
+        "rubrics": ["Двор"],
+        "author": "Иванова А. С.",
+        "author_label": "Воспитатель, Иванова А. С.",
+        "audience_label": "корпуса 8, 9",
+        "audience_total": 412,
+        "is_urgent": False,
+        "publish_at": "2026-10-18T09:00:00+03:00",
+        "image_ids": ["1841"],
+        "comment": None,
+        "submitted_at": "2026-10-17T14:20:00+03:00",
+    },
+    "post.review_withdrawn": {"post_ref": "412"},
     "message.stored": {"message_id": "018f2c5e-0000-7000-8000-000000000005"},
 }
 
@@ -404,6 +420,35 @@ UPSTREAM = {
         "photos": ["018f2c5e-0000-7000-8000-000000000031"],
         "post_url": None,
         "changed_at": "2026-10-11T12:00:00+03:00",
+    },
+    "post.reviewed": {
+        "post_ref": "412",
+        "verdict": "approved",
+        "comment": None,
+        "reviewer": "Смирнова Д.",
+        "title": "Субботник у 8 корпуса",
+        "body_md": "В субботу с 11 до 13 у восьмого корпуса.",
+        "images": [
+            {"aspirs_id": "1841"},
+            {"file_id": "018f2c5e-0000-7000-8000-000000000041"},
+        ],
+        "decided_at": "2026-10-17T16:05:00+03:00",
+    },
+    "post.edited": {
+        "post_ref": "412",
+        "editor": "Смирнова Д.",
+        "title": "Субботник у 8 корпуса: листья и чай",
+        "body_md": "В субботу с 11 до 13 у восьмого корпуса.",
+        "images": [{"aspirs_id": "1841"}],
+        "edited_at": "2026-10-18T10:00:00+03:00",
+    },
+    "media.to_feed": {
+        "request_ref": "018f2c5e-0000-7000-8000-000000000021",
+        "title": "Мастер-класс по керамике",
+        "text": "В субботу в гостиной восьмого корпуса лепили кружки.",
+        "photos": ["018f2c5e-0000-7000-8000-000000000031"],
+        "by": "Смирнова Д.",
+        "requested_at": "2026-10-11T13:00:00+03:00",
     },
 }
 
