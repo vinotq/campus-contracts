@@ -73,6 +73,8 @@ class PostPublished(Strict):
     image_ids: list[Key] = Field(default_factory=list, max_length=32)
     #: Только событие, с 1.23.0.
     event: PostEvent | None = None
+    #: Только справочная, с 1.23.0: смайлик пункта в списке, выбранный в АСПиРС.
+    icon: str | None = Field(default=None, max_length=16)
 
 
 class PostDeleted(Strict):
