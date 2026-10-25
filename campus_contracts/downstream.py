@@ -590,7 +590,8 @@ class MediaRequestCreated(Strict):
 
     С 1.23.0 кабинет читает `responsibles`: строки вида «Фамилия И. О.» или с
     пометкой «, студент» собирает АСПиРС. `organizer` для кабинета до 1.23.0,
-    в нём те же имена через запятую.
+    в нём те же имена через запятую. Пустой `responsibles` приходит от АСПиРС
+    до 1.23.0, тогда кабинет показывает `organizer`.
     """
 
     request_ref: str = Field(min_length=1, max_length=64)
@@ -600,7 +601,7 @@ class MediaRequestCreated(Strict):
     event_at: datetime
     place: str = Field(min_length=1, max_length=200)
     organizer: str = Field(min_length=1, max_length=200)
-    responsibles: list[MediaResponsible] = Field(min_length=1, max_length=MAX_MEDIA_RESPONSIBLES)
+    responsibles: list[MediaResponsible] = Field(default_factory=list, max_length=MAX_MEDIA_RESPONSIBLES)
     #: Что будет?
     what: str = Field(default="", max_length=MAX_MEDIA_ANSWER)
     #: Что получит студент?

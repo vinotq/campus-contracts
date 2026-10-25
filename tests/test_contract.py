@@ -309,9 +309,8 @@ def test_a_media_request_names_its_responsibles():
     assert request.entry == "Запись у воспитателя корпуса 8"
 
     body = {k: v for k, v in sample.items() if k != "responsibles"}
-    with pytest.raises(ValidationError):
-        validate(Direction.DOWNSTREAM, "media.request_created", body)
-    for responsibles in ([], [""], [LONG], ["Иванова М. П."] * (downstream.MAX_MEDIA_RESPONSIBLES + 1)):
+    assert validate(Direction.DOWNSTREAM, "media.request_created", body).responsibles == []
+    for responsibles in ([""], [LONG], ["Иванова М. П."] * (downstream.MAX_MEDIA_RESPONSIBLES + 1)):
         with pytest.raises(ValidationError):
             validate(Direction.DOWNSTREAM, "media.request_created", dict(sample, responsibles=responsibles))
 
