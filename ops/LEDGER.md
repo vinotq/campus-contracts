@@ -140,7 +140,7 @@
 статус: в работе
 цель: обязательное поле с файлами любого формата (фото, PDF, Word), сотрудник открывает их в допуске
 - campus-contracts oct25 4b47f16
-- aspirs-klpk-gateway oct25 ~
+- aspirs-klpk-gateway oct25 a424615
 - klkp oct25-services ~
 - aspirs oct25-ops ~
 порядок: контракт, шлюз, КЛКП, АСПиРС
