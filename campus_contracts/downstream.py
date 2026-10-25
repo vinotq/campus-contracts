@@ -656,6 +656,8 @@ class PostReviewRequested(Strict):
     image_ids: list[Key] = Field(default_factory=list, max_length=MAX_POST_IMAGES)
     comment: str | None = Field(default=None, max_length=MAX_REVIEW_COMMENT)
     submitted_at: datetime
+    #: Место и время новости, как в news.published: редактор видит их в превью.
+    event: PostEvent | None = None
 
 
 class PostReviewWithdrawn(Strict):

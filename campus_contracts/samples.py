@@ -288,6 +288,7 @@ DOWNSTREAM = {
         "image_ids": ["1841"],
         "comment": None,
         "submitted_at": "2026-10-17T14:20:00+03:00",
+        "event": {"starts_at": "2026-10-18T11:00:00+03:00", "place": "Двор между 8 и 9 корпусами"},
     },
     "post.review_withdrawn": {"post_ref": "412"},
     "message.stored": {"message_id": "018f2c5e-0000-7000-8000-000000000005"},
