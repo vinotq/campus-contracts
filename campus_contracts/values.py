@@ -37,6 +37,8 @@ class TicketSpot(StrEnum):
     CORRIDOR = "corridor"
     LIFT = "lift"
     STAIRS = "stairs"
+    YARD_8_9 = "yard_8_9"
+    YARD_11_12 = "yard_11_12"
 
 
 TICKET_SPOT_LABELS = {
@@ -48,6 +50,8 @@ TICKET_SPOT_LABELS = {
     TicketSpot.CORRIDOR: "коридор",
     TicketSpot.LIFT: "лифт",
     TicketSpot.STAIRS: "лестничный марш",
+    TicketSpot.YARD_8_9: "двор между 8 и 9 корпусами",
+    TicketSpot.YARD_11_12: "двор между 11 и 12 корпусами",
 }
 
 TICKET_SPOT_CHOICES = (
@@ -58,6 +62,8 @@ TICKET_SPOT_CHOICES = (
     TicketSpot.CORRIDOR,
     TicketSpot.LIFT,
     TicketSpot.STAIRS,
+    TicketSpot.YARD_8_9,
+    TicketSpot.YARD_11_12,
 )
 
 

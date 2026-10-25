@@ -6,6 +6,7 @@
 """
 
 from datetime import date, datetime, time
+from typing import Annotated
 
 from pydantic import Field, field_validator, model_validator
 
@@ -36,14 +37,27 @@ from campus_contracts.values import (
 
 
 class PostEvent(Strict):
-    """Когда и где проходит событие. Записи на него в кабинете пока нет."""
+    """Место и время новости, у любой новости по желанию. Записи в кабинете нет.
 
-    starts_at: datetime
+    Задано хотя бы одно из двух.
+    """
+
+    starts_at: datetime | None = None
     place: str = Field(default="", max_length=200)
+
+    @model_validator(mode="after")
+    def _time_or_place(self) -> "PostEvent":
+        if self.starts_at is None and not self.place.strip():
+            raise ValueError("нужно время или место")
+        return self
 
 
 class PostPublished(Strict):
     """Новость, событие или страница справочной.
+
+    Тип `event.published` устарел: с 1.23.0 АСПиРС шлёт только `news.published`,
+    место и время едут полем `event`. В карте типов он остаётся ради приёма от
+    АСПиРС до 1.23.0.
 
     Аудитория дублируется в конверте и здесь намеренно: конверт читает Шлюз,
     тело — кабинет, и разбирать чужое ради маршрутизации никто не должен.
@@ -71,7 +85,7 @@ class PostPublished(Strict):
     #: Галерея по порядку. Здесь только идентификаторы: файлы идут отдельным
     #: потоком по одноразовой ссылке, вкладывать их в сообщение нельзя.
     image_ids: list[Key] = Field(default_factory=list, max_length=32)
-    #: Только событие, с 1.23.0.
+    #: С 1.23.0, у любой новости по желанию.
     event: PostEvent | None = None
     #: Только справочная, с 1.23.0: смайлик пункта в списке, выбранный в АСПиРС.
     icon: str | None = Field(default=None, max_length=16)
@@ -565,9 +579,20 @@ class DutyInstruction(Strict):
 
 MAX_MEDIA_TEXT = 8000
 MAX_MEDIA_PHOTOS = 10
+MAX_MEDIA_RESPONSIBLES = 20
+MAX_MEDIA_ANSWER = 2000
+
+MediaResponsible = Annotated[str, Field(min_length=1, max_length=200)]
 
 
 class MediaRequestCreated(Strict):
+    """Заявка в Медиа на освещение мероприятия.
+
+    С 1.23.0 кабинет читает `responsibles`: строки вида «Фамилия И. О.» или с
+    пометкой «, студент» собирает АСПиРС. `organizer` для кабинета до 1.23.0,
+    в нём те же имена через запятую.
+    """
+
     request_ref: str = Field(min_length=1, max_length=64)
     number: str = Field(min_length=1, max_length=32)
     title: str = Field(min_length=1, max_length=200)
@@ -575,6 +600,15 @@ class MediaRequestCreated(Strict):
     event_at: datetime
     place: str = Field(min_length=1, max_length=200)
     organizer: str = Field(min_length=1, max_length=200)
+    responsibles: list[MediaResponsible] = Field(min_length=1, max_length=MAX_MEDIA_RESPONSIBLES)
+    #: Что будет?
+    what: str = Field(default="", max_length=MAX_MEDIA_ANSWER)
+    #: Что получит студент?
+    benefit: str = Field(default="", max_length=MAX_MEDIA_ANSWER)
+    #: Как пройдёт?
+    format: str = Field(default="", max_length=MAX_MEDIA_ANSWER)
+    #: Как попасть?
+    entry: str = Field(default="", max_length=MAX_MEDIA_ANSWER)
     note: str | None = Field(default=None, max_length=2000)
     created_at: datetime
 

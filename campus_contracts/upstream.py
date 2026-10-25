@@ -22,6 +22,7 @@ from campus_contracts.values import MediaRequestStatus, PostVerdict, RoundMark, 
 
 #: Больше гостей за раз в пропуск не пускают.
 MAX_VISITORS = 10
+MAX_KINSHIP_DOCS = 5
 
 
 class TicketItem(Strict):
@@ -136,7 +137,12 @@ class Car(Strict):
 
 
 class PassSubmitted(Strict):
-    """Пропуск для родных. Машин список, а не одна: приезжают и на двух."""
+    """Пропуск для родных. Машин список, а не одна: приезжают и на двух.
+
+    `kinship_docs` с 1.23.0: документы подтверждения родства, файлы вида
+    `pass_kinship`. Кабинет требует хотя бы один, контракт допускает пустой
+    список у старых пропусков.
+    """
 
     application_ref: str = Field(max_length=64)
     number: str = Field(max_length=32)
@@ -150,6 +156,7 @@ class PassSubmitted(Strict):
     to_time: time | None = None
     visitors: list[Visitor] = Field(min_length=1, max_length=MAX_VISITORS)
     cars: list[Car] = Field(default_factory=list, max_length=4)
+    kinship_docs: list[Key] = Field(default_factory=list, max_length=MAX_KINSHIP_DOCS)
 
 
 class ApplicationWithdrawn(Strict):

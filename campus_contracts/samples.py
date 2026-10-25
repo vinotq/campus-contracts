@@ -20,6 +20,7 @@ DOWNSTREAM = {
         "published_at": "2026-08-04T12:00:00+03:00",
         "audience": {"buildings": ["8", "9"], "courses": [1, 2], "groups": []},
         "image_ids": ["1841", "1842"],
+        "event": {"place": "Двор у восьмого корпуса"},
     },
     "news.updated": {
         "aspirs_ref": "412",
@@ -258,7 +259,12 @@ DOWNSTREAM = {
         "description": "Лепим кружки, обжиг на следующей неделе",
         "event_at": "2026-10-10T18:00:00+03:00",
         "place": "Гостиная корпуса 8",
-        "organizer": "Иванова Мария Петровна",
+        "organizer": "Иванова М. П., Ветров К. С., студент",
+        "responsibles": ["Иванова М. П.", "Ветров К. С., студент"],
+        "what": "Мастер-класс по керамике для первокурсников",
+        "benefit": "Своя кружка после обжига",
+        "format": "Два часа за гончарными кругами, по шесть человек",
+        "entry": "Запись у воспитателя корпуса 8",
         "note": "Нужны фото процесса, не только итог",
         "created_at": "2026-10-02T12:00:00+03:00",
     },
@@ -293,17 +299,17 @@ UPSTREAM = {
         "number": "Р-25-802",
         "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
         "place": "common",
-        "place_note": "Гамма 8 1 5 кухня",
-        "building": "8",
-        "entrance": "1",
-        "floor": 5,
+        "place_note": "Гамма двор между 8 и 9 корпусами",
+        "building": None,
+        "entrance": None,
+        "floor": None,
         "room": None,
-        "spot": "kitchen",
+        "spot": "yard_8_9",
         "items": [
             {
                 "ref": "018f2c5e-0000-7000-8000-000000000002",
                 "position": 1,
-                "text": "Течёт смеситель",
+                "text": "Не горит фонарь у скамеек",
                 "is_urgent": False,
                 "photos": ["018f2c5e-0000-7000-8000-00000000000a"],
             }
@@ -351,6 +357,7 @@ UPSTREAM = {
             }
         ],
         "cars": [{"make": "Lada Vesta", "plate": "А123ВС 777", "color": "белый"}],
+        "kinship_docs": ["018f2c5e-0000-7000-8000-000000000051"],
     },
     "application.withdrawn": {"application_ref": "018f2c5e-0000-7000-8000-000000000003"},
     "profile.change_requested": {
