@@ -369,7 +369,8 @@
 - klkp icons-lucide afbe1c0
 - klkp posts-review 3444007
 - aspirs icons-lucide ~
-дальше: КЛКП слито; АСПиРС в работе, заодно комментарий смены в xlsx белья (L-042)
+- klkp icons-fluent ~
+дальше: выбран Fluent Regular (27.10, из 43 наборов): КЛКП меняет Lucide на Fluent, АСПиРС ставит Fluent с нуля; заодно комментарий смены в xlsx белья (L-042)
 
 ### L-051 Волонтёрские часы
 статус: закоммичено
