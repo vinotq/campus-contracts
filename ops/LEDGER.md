@@ -371,6 +371,7 @@
 - klkp icons-lucide afbe1c0
 - klkp posts-review 3444007
 - aspirs icons-lucide b3481c3
+- aspirs posts-review 2e87b6a
 - klkp icons-fluent c3c41e6
 дальше: слито в posts-review: КЛКП Fluent Regular, АСПиРС Tango с добором Silk; строка атрибуции Silk (CC BY 2.5) под формой входа АСПиРС; у мелких значков Fluent в КЛКП тонкая линия, ждёт решения
 
