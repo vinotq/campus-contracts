@@ -370,7 +370,7 @@
 - klkp posts-review 3444007
 - aspirs icons-lucide ~
 - klkp icons-fluent c3c41e6
-дальше: выбран Fluent Regular (27.10, из 43 наборов): КЛКП меняет Lucide на Fluent, АСПиРС ставит Fluent с нуля; заодно комментарий смены в xlsx белья (L-042)
+дальше: КЛКП на Fluent Regular слито; АСПиРС: Tango (GNOME 2) с добором из FamFamFam Silk (решено 27.10), в работе в ветке icons-lucide поверх общего модуля Icon.tsx (94fa750); заодно комментарий смены в xlsx белья (L-042)
 
 ### L-051 Волонтёрские часы
 статус: закоммичено
