@@ -175,6 +175,8 @@ class ResidentRole(StrEnum):
     #: Медиа: снимает и пишет про жизнь кампуса. Ручек обхода не открывает.
     MEDIA = "media"
     HEADMAN = "headman"
+    #: Волонтёр, с 1.23.0: АСПиРС ведёт ему волонтёрские часы.
+    VOLUNTEER = "volunteer"
     DUTY_ALL = "duty_all"
     ROUNDS_ALL = "rounds_all"
     POSTS_ALL = "posts_all"
