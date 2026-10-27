@@ -622,8 +622,18 @@ MAX_MEDIA_FORMS = 20
 
 
 class MediaFormLink(Strict):
+    """Ссылка на форму. С 1.23.0 у формы есть постоянный ref, вид и срок.
+
+    По ref кабинет узнаёт новую форму и шлёт уведомление один раз. Временная
+    форма (`temporary`) с `until` пропадает из кабинета после срока. Старый
+    АСПиРС шлёт формы без ref: кабинет показывает их без уведомлений.
+    """
+
     title: str = Field(min_length=1, max_length=120)
     url: str = Field(min_length=8, max_length=500, pattern=r"^https://\S+$")
+    ref: Key | None = None
+    kind: str = Field(default="permanent", pattern=r"^(permanent|temporary)$")
+    until: datetime | None = None
 
 
 class MediaForms(Strict):
