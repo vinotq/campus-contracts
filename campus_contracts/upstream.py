@@ -315,6 +315,8 @@ class PostReviewed(Strict):
     verdict: PostVerdict
     comment: str | None = Field(default=None, max_length=MAX_REVIEW_COMMENT)
     reviewer: str = Field(min_length=1, max_length=200)
+    #: С 1.23.0: aspirs_ref редактора Медиа. АСПиРС проверяет, что у него право media_review.
+    reviewer_ref: Key | None = None
     title: str = Field(min_length=1, max_length=300)
     body_md: str = Field(max_length=100_000)
     images: list[PostImageRef] = Field(default_factory=list, max_length=MAX_POST_IMAGES)
@@ -326,6 +328,8 @@ class PostEdited(Strict):
 
     post_ref: Key
     editor: str = Field(min_length=1, max_length=200)
+    #: С 1.23.0: aspirs_ref редактора Медиа, правившего вышедшую публикацию.
+    editor_ref: Key | None = None
     title: str = Field(min_length=1, max_length=300)
     body_md: str = Field(max_length=100_000)
     images: list[PostImageRef] = Field(default_factory=list, max_length=MAX_POST_IMAGES)
@@ -340,6 +344,8 @@ class MediaToFeed(Strict):
     text: str = Field(min_length=1, max_length=MAX_MEDIA_TEXT)
     photos: list[Key] = Field(default_factory=list, max_length=MAX_MEDIA_PHOTOS)
     by: str = Field(min_length=1, max_length=200)
+    #: С 1.23.0: aspirs_ref того, кто отправил материал в ленту.
+    by_ref: Key | None = None
     requested_at: datetime
 
 
