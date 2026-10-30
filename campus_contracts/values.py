@@ -28,6 +28,15 @@ class ApplicationStatus(StrEnum):
     WITHDRAWN = "withdrawn"
 
 
+APPLICATION_STATUS_LABELS = {
+    ApplicationStatus.SUBMITTED: "Отправлено",
+    ApplicationStatus.WITH_TUTOR: "Взято в работу",
+    ApplicationStatus.APPROVED: "Одобрено",
+    ApplicationStatus.DECLINED: "Отклонено",
+    ApplicationStatus.WITHDRAWN: "Отозвано",
+}
+
+
 class TicketSpot(StrEnum):
     COWORKING = "coworking"
     KITCHEN = "kitchen"
@@ -83,6 +92,14 @@ class ItemStatus(StrEnum):
     DONE = "done"
     #: Причина обязательна.
     REJECTED = "rejected"
+
+
+ITEM_STATUS_LABELS = {
+    ItemStatus.SENT: "Отправлена",
+    ItemStatus.IN_PROGRESS: "В работе",
+    ItemStatus.DONE: "Выполнена",
+    ItemStatus.REJECTED: "Отклонена",
+}
 
 
 class PostKind(StrEnum):
