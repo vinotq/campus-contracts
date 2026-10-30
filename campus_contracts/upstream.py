@@ -82,12 +82,14 @@ class TicketWithdrawn(Strict):
     """Студент закрыл заявку сам. Дописывать её после этого нельзя."""
 
     ticket_ref: str = Field(max_length=64)
+    aspirs_ref: Key | None = None
 
 
 class TicketChecked(Strict):
     """Ответ студента, сделали ли заявку. `done=False` возвращает её в очередь повторной подачи."""
 
     ticket_ref: str = Field(max_length=64)
+    aspirs_ref: Key | None = None
     #: Подзаявка, о которой ответ. Пусто: ответ обо всей заявке.
     item_ref: str | None = Field(default=None, max_length=64)
     done: bool
@@ -161,6 +163,7 @@ class PassSubmitted(Strict):
 
 class ApplicationWithdrawn(Strict):
     application_ref: str = Field(max_length=64)
+    aspirs_ref: Key | None = None
 
 
 class LinenCollected(Strict):
@@ -347,6 +350,7 @@ class MediaToFeed(Strict):
     #: С 1.23.0: aspirs_ref того, кто отправил материал в ленту.
     by_ref: Key | None = None
     requested_at: datetime
+    request_revision: int | None = Field(default=None, ge=1)
 
 
 #: Тип сообщения → схема тела.

@@ -461,6 +461,13 @@ UPSTREAM = {
     },
 }
 
+DOWNSTREAM["media.request_updated"] = {
+    **DOWNSTREAM["media.request_created"],
+    "revision": 2,
+    "event_at": "2026-10-11T18:00:00+03:00",
+    "changed_at": "2026-10-03T12:00:00+03:00",
+}
+
 SAMPLES = {
     Direction.DOWNSTREAM: DOWNSTREAM,
     Direction.UPSTREAM: UPSTREAM,

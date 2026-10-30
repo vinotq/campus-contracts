@@ -612,6 +612,12 @@ class MediaRequestCreated(Strict):
     entry: str = Field(default="", max_length=MAX_MEDIA_ANSWER)
     note: str | None = Field(default=None, max_length=2000)
     created_at: datetime
+    revision: int = Field(default=1, ge=1)
+
+
+class MediaRequestUpdated(MediaRequestCreated):
+    revision: int = Field(ge=2)
+    changed_at: datetime
 
 
 class MediaRequestWithdrawn(Strict):
@@ -719,6 +725,7 @@ SCHEMAS = {
     "duty.entrance": DutyEntrance,
     "duty.instruction": DutyInstruction,
     "media.request_created": MediaRequestCreated,
+    "media.request_updated": MediaRequestUpdated,
     "media.request_withdrawn": MediaRequestWithdrawn,
     "media.forms": MediaForms,
     "post.review_requested": PostReviewRequested,
