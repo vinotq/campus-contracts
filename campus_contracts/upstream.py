@@ -289,6 +289,8 @@ class MediaRequestStatusChanged(Strict):
     request_ref: str = Field(min_length=1, max_length=64)
     status: MediaRequestStatus
     assignee: str | None = Field(default=None, max_length=200)
+    assignee_ref: Key | None = None
+    reviewer_ref: Key | None = None
     text: str | None = Field(default=None, max_length=MAX_MEDIA_TEXT)
     photos: list[Key] = Field(default_factory=list, max_length=MAX_MEDIA_PHOTOS)
     post_url: str | None = Field(default=None, max_length=500)

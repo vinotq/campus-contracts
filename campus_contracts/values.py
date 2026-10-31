@@ -198,6 +198,8 @@ class ResidentRole(StrEnum):
     ROUNDS_ALL = "rounds_all"
     POSTS_ALL = "posts_all"
     MEDIA_REVIEW = "media_review"
+    MEDIA_SELF_REVIEW = "media_self_review"
+    MEDIA_DIRECT_EDIT = "media_direct_edit"
 
 
 RESIDENT_RIGHTS = (
@@ -205,6 +207,8 @@ RESIDENT_RIGHTS = (
     ResidentRole.ROUNDS_ALL,
     ResidentRole.POSTS_ALL,
     ResidentRole.MEDIA_REVIEW,
+    ResidentRole.MEDIA_SELF_REVIEW,
+    ResidentRole.MEDIA_DIRECT_EDIT,
 )
 
 
