@@ -118,11 +118,17 @@ ENFORCED = frozenset({
     "ticket.checked",
     "account.badges_updated",
     "media.request_created",
+    "media.request_updated",
     "media.request_withdrawn",
     "media.request_status_changed",
     "media.forms",
     "ticket.message",
     "ticket.filed",
+    "post.review_requested",
+    "post.review_withdrawn",
+    "post.reviewed",
+    "post.edited",
+    "media.to_feed",
 })
 
 

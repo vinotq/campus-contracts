@@ -6,6 +6,7 @@
 """
 
 from datetime import date, datetime, time
+from typing import Annotated
 
 from pydantic import Field, field_validator, model_validator
 
@@ -35,8 +36,28 @@ from campus_contracts.values import (
 # ── Публикации ───────────────────────────────────────────────────────────────
 
 
+class PostEvent(Strict):
+    """Место и время новости, у любой новости по желанию. Записи в кабинете нет.
+
+    Задано хотя бы одно из двух.
+    """
+
+    starts_at: datetime | None = None
+    place: str = Field(default="", max_length=200)
+
+    @model_validator(mode="after")
+    def _time_or_place(self) -> "PostEvent":
+        if self.starts_at is None and not self.place.strip():
+            raise ValueError("нужно время или место")
+        return self
+
+
 class PostPublished(Strict):
     """Новость, событие или страница справочной.
+
+    Тип `event.published` устарел: с 1.23.0 АСПиРС шлёт только `news.published`,
+    место и время едут полем `event`. В карте типов он остаётся ради приёма от
+    АСПиРС до 1.23.0.
 
     Аудитория дублируется в конверте и здесь намеренно: конверт читает Шлюз,
     тело — кабинет, и разбирать чужое ради маршрутизации никто не должен.
@@ -64,6 +85,10 @@ class PostPublished(Strict):
     #: Галерея по порядку. Здесь только идентификаторы: файлы идут отдельным
     #: потоком по одноразовой ссылке, вкладывать их в сообщение нельзя.
     image_ids: list[Key] = Field(default_factory=list, max_length=32)
+    #: С 1.23.0, у любой новости по желанию.
+    event: PostEvent | None = None
+    #: Только справочная, с 1.23.0: смайлик пункта в списке, выбранный в АСПиРС.
+    icon: str | None = Field(default=None, max_length=16)
 
 
 class PostDeleted(Strict):
@@ -554,9 +579,21 @@ class DutyInstruction(Strict):
 
 MAX_MEDIA_TEXT = 8000
 MAX_MEDIA_PHOTOS = 10
+MAX_MEDIA_RESPONSIBLES = 20
+MAX_MEDIA_ANSWER = 2000
+
+MediaResponsible = Annotated[str, Field(min_length=1, max_length=200)]
 
 
 class MediaRequestCreated(Strict):
+    """Заявка в Медиа на освещение мероприятия.
+
+    С 1.23.0 кабинет читает `responsibles`: строки вида «Фамилия И. О.» или с
+    пометкой «, студент» собирает АСПиРС. `organizer` для кабинета до 1.23.0,
+    в нём те же имена через запятую. Пустой `responsibles` приходит от АСПиРС
+    до 1.23.0, тогда кабинет показывает `organizer`.
+    """
+
     request_ref: str = Field(min_length=1, max_length=64)
     number: str = Field(min_length=1, max_length=32)
     title: str = Field(min_length=1, max_length=200)
@@ -564,8 +601,23 @@ class MediaRequestCreated(Strict):
     event_at: datetime
     place: str = Field(min_length=1, max_length=200)
     organizer: str = Field(min_length=1, max_length=200)
+    responsibles: list[MediaResponsible] = Field(default_factory=list, max_length=MAX_MEDIA_RESPONSIBLES)
+    #: Что будет?
+    what: str = Field(default="", max_length=MAX_MEDIA_ANSWER)
+    #: Что получит студент?
+    benefit: str = Field(default="", max_length=MAX_MEDIA_ANSWER)
+    #: Как пройдёт?
+    format: str = Field(default="", max_length=MAX_MEDIA_ANSWER)
+    #: Как попасть?
+    entry: str = Field(default="", max_length=MAX_MEDIA_ANSWER)
     note: str | None = Field(default=None, max_length=2000)
     created_at: datetime
+    revision: int = Field(default=1, ge=1)
+
+
+class MediaRequestUpdated(MediaRequestCreated):
+    revision: int = Field(ge=2)
+    changed_at: datetime
 
 
 class MediaRequestWithdrawn(Strict):
@@ -576,12 +628,56 @@ MAX_MEDIA_FORMS = 20
 
 
 class MediaFormLink(Strict):
+    """Ссылка на форму. С 1.23.0 у формы есть постоянный ref, вид и срок.
+
+    По ref кабинет узнаёт новую форму и шлёт уведомление один раз. Временная
+    форма (`temporary`) с `until` пропадает из кабинета после срока. Старый
+    АСПиРС шлёт формы без ref: кабинет показывает их без уведомлений.
+    """
+
     title: str = Field(min_length=1, max_length=120)
     url: str = Field(min_length=8, max_length=500, pattern=r"^https://\S+$")
+    ref: Key | None = None
+    kind: str = Field(default="permanent", pattern=r"^(permanent|temporary)$")
+    until: datetime | None = None
 
 
 class MediaForms(Strict):
     forms: list[MediaFormLink] = Field(default_factory=list, max_length=MAX_MEDIA_FORMS)
+
+
+# ── Согласование публикаций ──────────────────────────────────────────────────
+
+MAX_POST_IMAGES = 32
+MAX_REVIEW_COMMENT = 2000
+
+
+class PostReviewRequested(Strict):
+    """Публикация уходит редактору Медиа. В ленту не попадает.
+
+    Аудитория едет подписью и числом: редактору нужно понимать, кому пишут,
+    а не разбирать корпуса и группы.
+    """
+
+    post_ref: Key
+    title: str = Field(min_length=1, max_length=300)
+    body_md: str = Field(max_length=100_000)
+    rubrics: list[Key] = Field(default_factory=list, max_length=8)
+    author: str = Field(min_length=1, max_length=200)
+    author_label: str | None = Field(default=None, max_length=160)
+    audience_label: str = Field(min_length=1, max_length=200)
+    audience_total: int = Field(ge=0)
+    is_urgent: bool = False
+    publish_at: datetime | None = None
+    image_ids: list[Key] = Field(default_factory=list, max_length=MAX_POST_IMAGES)
+    comment: str | None = Field(default=None, max_length=MAX_REVIEW_COMMENT)
+    submitted_at: datetime
+    #: Место и время новости, как в news.published: редактор видит их в превью.
+    event: PostEvent | None = None
+
+
+class PostReviewWithdrawn(Strict):
+    post_ref: Key
 
 
 # ── Служебное ────────────────────────────────────────────────────────────────
@@ -629,7 +725,10 @@ SCHEMAS = {
     "duty.entrance": DutyEntrance,
     "duty.instruction": DutyInstruction,
     "media.request_created": MediaRequestCreated,
+    "media.request_updated": MediaRequestUpdated,
     "media.request_withdrawn": MediaRequestWithdrawn,
     "media.forms": MediaForms,
+    "post.review_requested": PostReviewRequested,
+    "post.review_withdrawn": PostReviewWithdrawn,
     "message.stored": MessageStored,
 }

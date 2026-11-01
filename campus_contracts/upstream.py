@@ -9,13 +9,20 @@ from datetime import date, datetime, time
 
 from pydantic import Field, model_validator
 
-from campus_contracts.downstream import MAX_CHAT_PHOTOS, MAX_MEDIA_PHOTOS, MAX_MEDIA_TEXT
+from campus_contracts.downstream import (
+    MAX_CHAT_PHOTOS,
+    MAX_MEDIA_PHOTOS,
+    MAX_MEDIA_TEXT,
+    MAX_POST_IMAGES,
+    MAX_REVIEW_COMMENT,
+)
 from campus_contracts.duty import MAX_DUTY_ZONES, DutyZone
 from campus_contracts.envelope import MAX_ROUND_PEOPLE, Key, Strict
-from campus_contracts.values import MediaRequestStatus, RoundMark, TicketSpot
+from campus_contracts.values import MediaRequestStatus, PostVerdict, RoundMark, TicketSpot
 
 #: Больше гостей за раз в пропуск не пускают.
 MAX_VISITORS = 10
+MAX_KINSHIP_DOCS = 5
 
 
 class TicketItem(Strict):
@@ -75,12 +82,14 @@ class TicketWithdrawn(Strict):
     """Студент закрыл заявку сам. Дописывать её после этого нельзя."""
 
     ticket_ref: str = Field(max_length=64)
+    aspirs_ref: Key | None = None
 
 
 class TicketChecked(Strict):
     """Ответ студента, сделали ли заявку. `done=False` возвращает её в очередь повторной подачи."""
 
     ticket_ref: str = Field(max_length=64)
+    aspirs_ref: Key | None = None
     #: Подзаявка, о которой ответ. Пусто: ответ обо всей заявке.
     item_ref: str | None = Field(default=None, max_length=64)
     done: bool
@@ -125,10 +134,17 @@ class Visitor(Strict):
 class Car(Strict):
     make: str = Field(max_length=100)
     plate: str = Field(min_length=1, max_length=32)
+    #: С 1.23.0: форма допуска на КПП спрашивает цвет отдельной графой.
+    color: str | None = Field(default=None, max_length=40)
 
 
 class PassSubmitted(Strict):
-    """Пропуск для родных. Машин список, а не одна: приезжают и на двух."""
+    """Пропуск для родных. Машин список, а не одна: приезжают и на двух.
+
+    `kinship_docs` с 1.23.0: документы подтверждения родства, файлы вида
+    `pass_kinship`. Кабинет требует хотя бы один, контракт допускает пустой
+    список у старых пропусков.
+    """
 
     application_ref: str = Field(max_length=64)
     number: str = Field(max_length=32)
@@ -142,10 +158,12 @@ class PassSubmitted(Strict):
     to_time: time | None = None
     visitors: list[Visitor] = Field(min_length=1, max_length=MAX_VISITORS)
     cars: list[Car] = Field(default_factory=list, max_length=4)
+    kinship_docs: list[Key] = Field(default_factory=list, max_length=MAX_KINSHIP_DOCS)
 
 
 class ApplicationWithdrawn(Strict):
     application_ref: str = Field(max_length=64)
+    aspirs_ref: Key | None = None
 
 
 class LinenCollected(Strict):
@@ -271,10 +289,70 @@ class MediaRequestStatusChanged(Strict):
     request_ref: str = Field(min_length=1, max_length=64)
     status: MediaRequestStatus
     assignee: str | None = Field(default=None, max_length=200)
+    assignee_ref: Key | None = None
+    reviewer_ref: Key | None = None
     text: str | None = Field(default=None, max_length=MAX_MEDIA_TEXT)
     photos: list[Key] = Field(default_factory=list, max_length=MAX_MEDIA_PHOTOS)
     post_url: str | None = Field(default=None, max_length=500)
     changed_at: datetime
+
+
+class PostImageRef(Strict):
+    """Картинка публикации после редактора: прежняя из АСПиРС или новая из кабинета.
+
+    Новая едет файлом вида `post_image` под тем же `file_id`.
+    """
+
+    aspirs_id: Key | None = None
+    file_id: Key | None = None
+
+    @model_validator(mode="after")
+    def exactly_one(self) -> "PostImageRef":
+        if (self.aspirs_id is None) == (self.file_id is None):
+            raise ValueError("нужен ровно один из aspirs_id и file_id")
+        return self
+
+
+class PostReviewed(Strict):
+    """Решение редактора Медиа. Заголовок, текст и картинки едут итоговые."""
+
+    post_ref: Key
+    verdict: PostVerdict
+    comment: str | None = Field(default=None, max_length=MAX_REVIEW_COMMENT)
+    reviewer: str = Field(min_length=1, max_length=200)
+    #: С 1.23.0: aspirs_ref редактора Медиа. АСПиРС проверяет, что у него право media_review.
+    reviewer_ref: Key | None = None
+    title: str = Field(min_length=1, max_length=300)
+    body_md: str = Field(max_length=100_000)
+    images: list[PostImageRef] = Field(default_factory=list, max_length=MAX_POST_IMAGES)
+    decided_at: datetime
+
+
+class PostEdited(Strict):
+    """Правка уже вышедшей публикации редактором Медиа."""
+
+    post_ref: Key
+    editor: str = Field(min_length=1, max_length=200)
+    #: С 1.23.0: aspirs_ref редактора Медиа, правившего вышедшую публикацию.
+    editor_ref: Key | None = None
+    title: str = Field(min_length=1, max_length=300)
+    body_md: str = Field(max_length=100_000)
+    images: list[PostImageRef] = Field(default_factory=list, max_length=MAX_POST_IMAGES)
+    edited_at: datetime
+
+
+class MediaToFeed(Strict):
+    """Согласованный материал Медиа уходит в ленту Кампуса без второго согласования."""
+
+    request_ref: str = Field(min_length=1, max_length=64)
+    title: str = Field(min_length=1, max_length=300)
+    text: str = Field(min_length=1, max_length=MAX_MEDIA_TEXT)
+    photos: list[Key] = Field(default_factory=list, max_length=MAX_MEDIA_PHOTOS)
+    by: str = Field(min_length=1, max_length=200)
+    #: С 1.23.0: aspirs_ref того, кто отправил материал в ленту.
+    by_ref: Key | None = None
+    requested_at: datetime
+    request_revision: int | None = Field(default=None, ge=1)
 
 
 #: Тип сообщения → схема тела.
@@ -294,4 +372,7 @@ SCHEMAS = {
     "round.submitted": RoundSubmitted,
     "duty.instruction_edited": DutyInstructionEdited,
     "media.request_status_changed": MediaRequestStatusChanged,
+    "media.to_feed": MediaToFeed,
+    "post.reviewed": PostReviewed,
+    "post.edited": PostEdited,
 }

@@ -28,6 +28,15 @@ class ApplicationStatus(StrEnum):
     WITHDRAWN = "withdrawn"
 
 
+APPLICATION_STATUS_LABELS = {
+    ApplicationStatus.SUBMITTED: "Отправлено",
+    ApplicationStatus.WITH_TUTOR: "Взято в работу",
+    ApplicationStatus.APPROVED: "Одобрено",
+    ApplicationStatus.DECLINED: "Отклонено",
+    ApplicationStatus.WITHDRAWN: "Отозвано",
+}
+
+
 class TicketSpot(StrEnum):
     COWORKING = "coworking"
     KITCHEN = "kitchen"
@@ -37,6 +46,8 @@ class TicketSpot(StrEnum):
     CORRIDOR = "corridor"
     LIFT = "lift"
     STAIRS = "stairs"
+    YARD_8_9 = "yard_8_9"
+    YARD_11_12 = "yard_11_12"
 
 
 TICKET_SPOT_LABELS = {
@@ -48,6 +59,8 @@ TICKET_SPOT_LABELS = {
     TicketSpot.CORRIDOR: "коридор",
     TicketSpot.LIFT: "лифт",
     TicketSpot.STAIRS: "лестничный марш",
+    TicketSpot.YARD_8_9: "двор между 8 и 9 корпусами",
+    TicketSpot.YARD_11_12: "двор между 11 и 12 корпусами",
 }
 
 TICKET_SPOT_CHOICES = (
@@ -58,6 +71,8 @@ TICKET_SPOT_CHOICES = (
     TicketSpot.CORRIDOR,
     TicketSpot.LIFT,
     TicketSpot.STAIRS,
+    TicketSpot.YARD_8_9,
+    TicketSpot.YARD_11_12,
 )
 
 
@@ -79,12 +94,20 @@ class ItemStatus(StrEnum):
     REJECTED = "rejected"
 
 
+ITEM_STATUS_LABELS = {
+    ItemStatus.SENT: "Отправлена",
+    ItemStatus.IN_PROGRESS: "В работе",
+    ItemStatus.DONE: "Выполнена",
+    ItemStatus.REJECTED: "Отклонена",
+}
+
+
 class PostKind(StrEnum):
     """Вид публикации.
 
-    `event` в базовой версии — та же публикация: ни времени, ни места, ни числа
-    мест кабинет не хранит и не показывает. Запись на события отдельная работа,
-    и в контракте её нет.
+    С 1.23.0 АСПиРС шлёт только `news` и `reference`: место и время может
+    иметь любая новость (поле `event`). `event` остаётся для приёма от АСПиРС
+    до 1.23.0. Записи на события в контракте нет.
     """
 
     NEWS = "news"
@@ -169,10 +192,14 @@ class ResidentRole(StrEnum):
     #: Медиа: снимает и пишет про жизнь кампуса. Ручек обхода не открывает.
     MEDIA = "media"
     HEADMAN = "headman"
+    #: Волонтёр, с 1.23.0: АСПиРС ведёт ему волонтёрские часы.
+    VOLUNTEER = "volunteer"
     DUTY_ALL = "duty_all"
     ROUNDS_ALL = "rounds_all"
     POSTS_ALL = "posts_all"
     MEDIA_REVIEW = "media_review"
+    MEDIA_SELF_REVIEW = "media_self_review"
+    MEDIA_DIRECT_EDIT = "media_direct_edit"
 
 
 RESIDENT_RIGHTS = (
@@ -180,6 +207,8 @@ RESIDENT_RIGHTS = (
     ResidentRole.ROUNDS_ALL,
     ResidentRole.POSTS_ALL,
     ResidentRole.MEDIA_REVIEW,
+    ResidentRole.MEDIA_SELF_REVIEW,
+    ResidentRole.MEDIA_DIRECT_EDIT,
 )
 
 
@@ -188,6 +217,11 @@ class MediaRequestStatus(StrEnum):
     IN_WORK = "in_work"
     READY = "ready"
     PUBLISHED = "published"
+
+
+class PostVerdict(StrEnum):
+    APPROVED = "approved"
+    REWORK = "rework"
 
 
 class RoundMark(StrEnum):

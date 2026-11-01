@@ -20,6 +20,7 @@ DOWNSTREAM = {
         "published_at": "2026-08-04T12:00:00+03:00",
         "audience": {"buildings": ["8", "9"], "courses": [1, 2], "groups": []},
         "image_ids": ["1841", "1842"],
+        "event": {"place": "Двор у восьмого корпуса"},
     },
     "news.updated": {
         "aspirs_ref": "412",
@@ -35,6 +36,7 @@ DOWNSTREAM = {
         "title": "Встреча с выпускниками",
         "body_md": "В актовом зале.",
         "published_at": "2026-08-05T09:00:00+03:00",
+        "event": {"starts_at": "2026-08-12T18:00:00+03:00", "place": "Актовый зал 8 корпуса"},
     },
     "event.updated": {
         "aspirs_ref": "413",
@@ -257,7 +259,12 @@ DOWNSTREAM = {
         "description": "Лепим кружки, обжиг на следующей неделе",
         "event_at": "2026-10-10T18:00:00+03:00",
         "place": "Гостиная корпуса 8",
-        "organizer": "Иванова Мария Петровна",
+        "organizer": "Иванова М. П., Ветров К. С., студент",
+        "responsibles": ["Иванова М. П.", "Ветров К. С., студент"],
+        "what": "Мастер-класс по керамике для первокурсников",
+        "benefit": "Своя кружка после обжига",
+        "format": "Два часа за гончарными кругами, по шесть человек",
+        "entry": "Запись у воспитателя корпуса 8",
         "note": "Нужны фото процесса, не только итог",
         "created_at": "2026-10-02T12:00:00+03:00",
     },
@@ -267,6 +274,23 @@ DOWNSTREAM = {
             {"title": "Заявка на мероприятие", "url": "https://forms.yandex.ru/u/abc123/"},
         ],
     },
+    "post.review_requested": {
+        "post_ref": "412",
+        "title": "Субботник во дворе",
+        "body_md": "Собираемся в субботу в 11 у восьмого корпуса.",
+        "rubrics": ["Двор"],
+        "author": "Иванова А. С.",
+        "author_label": "Воспитатель, Иванова А. С.",
+        "audience_label": "корпуса 8, 9",
+        "audience_total": 412,
+        "is_urgent": False,
+        "publish_at": "2026-10-18T09:00:00+03:00",
+        "image_ids": ["1841"],
+        "comment": None,
+        "submitted_at": "2026-10-17T14:20:00+03:00",
+        "event": {"starts_at": "2026-10-18T11:00:00+03:00", "place": "Двор между 8 и 9 корпусами"},
+    },
+    "post.review_withdrawn": {"post_ref": "412"},
     "message.stored": {"message_id": "018f2c5e-0000-7000-8000-000000000005"},
 }
 
@@ -276,17 +300,17 @@ UPSTREAM = {
         "number": "Р-25-802",
         "aspirs_ref": "Zx8_q1TfGh0LmN2pQrStUv",
         "place": "common",
-        "place_note": "Гамма 8 1 5 кухня",
-        "building": "8",
-        "entrance": "1",
-        "floor": 5,
+        "place_note": "Гамма двор между 8 и 9 корпусами",
+        "building": None,
+        "entrance": None,
+        "floor": None,
         "room": None,
-        "spot": "kitchen",
+        "spot": "yard_8_9",
         "items": [
             {
                 "ref": "018f2c5e-0000-7000-8000-000000000002",
                 "position": 1,
-                "text": "Течёт смеситель",
+                "text": "Не горит фонарь у скамеек",
                 "is_urgent": False,
                 "photos": ["018f2c5e-0000-7000-8000-00000000000a"],
             }
@@ -333,7 +357,8 @@ UPSTREAM = {
                 "document": "4519 123456",
             }
         ],
-        "cars": [{"make": "Lada Vesta", "plate": "А123ВС777"}],
+        "cars": [{"make": "Lada Vesta", "plate": "А123ВС 777", "color": "белый"}],
+        "kinship_docs": ["018f2c5e-0000-7000-8000-000000000051"],
     },
     "application.withdrawn": {"application_ref": "018f2c5e-0000-7000-8000-000000000003"},
     "profile.change_requested": {
@@ -405,6 +430,42 @@ UPSTREAM = {
         "post_url": None,
         "changed_at": "2026-10-11T12:00:00+03:00",
     },
+    "post.reviewed": {
+        "post_ref": "412",
+        "verdict": "approved",
+        "comment": None,
+        "reviewer": "Смирнова Д.",
+        "title": "Субботник у 8 корпуса",
+        "body_md": "В субботу с 11 до 13 у восьмого корпуса.",
+        "images": [
+            {"aspirs_id": "1841"},
+            {"file_id": "018f2c5e-0000-7000-8000-000000000041"},
+        ],
+        "decided_at": "2026-10-17T16:05:00+03:00",
+    },
+    "post.edited": {
+        "post_ref": "412",
+        "editor": "Смирнова Д.",
+        "title": "Субботник у 8 корпуса: листья и чай",
+        "body_md": "В субботу с 11 до 13 у восьмого корпуса.",
+        "images": [{"aspirs_id": "1841"}],
+        "edited_at": "2026-10-18T10:00:00+03:00",
+    },
+    "media.to_feed": {
+        "request_ref": "018f2c5e-0000-7000-8000-000000000021",
+        "title": "Мастер-класс по керамике",
+        "text": "В субботу в гостиной восьмого корпуса лепили кружки.",
+        "photos": ["018f2c5e-0000-7000-8000-000000000031"],
+        "by": "Смирнова Д.",
+        "requested_at": "2026-10-11T13:00:00+03:00",
+    },
+}
+
+DOWNSTREAM["media.request_updated"] = {
+    **DOWNSTREAM["media.request_created"],
+    "revision": 2,
+    "event_at": "2026-10-11T18:00:00+03:00",
+    "changed_at": "2026-10-03T12:00:00+03:00",
 }
 
 SAMPLES = {

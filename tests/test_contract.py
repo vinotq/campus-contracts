@@ -270,3 +270,76 @@ def test_a_chat_message_needs_text_or_a_photo(direction, model):
         model.model_validate({**base, "text": "  ", "photos": []})
     with pytest.raises(ValidationError):
         model.model_validate({**base, "photos": [f"k{i}" for i in range(downstream.MAX_CHAT_PHOTOS + 1)]})
+
+
+def test_an_event_carries_its_time_and_place():
+    body = SAMPLES[Direction.DOWNSTREAM]["event.published"]
+    post = validate(Direction.DOWNSTREAM, "event.published", body)
+    assert post.event.place == "Актовый зал 8 корпуса"
+    assert post.event.starts_at.hour == 18
+
+
+def test_a_news_post_carries_only_a_place():
+    post = validate(Direction.DOWNSTREAM, "news.published", SAMPLES[Direction.DOWNSTREAM]["news.published"])
+    assert post.event.starts_at is None
+    assert post.event.place == "Двор у восьмого корпуса"
+
+
+def test_a_news_post_may_have_no_event():
+    post = validate(Direction.DOWNSTREAM, "news.published", SAMPLES[Direction.DOWNSTREAM]["news.updated"])
+    assert post.event is None
+
+
+@pytest.mark.parametrize("event", [{}, {"place": "  "}])
+def test_an_event_needs_time_or_place(event):
+    body = dict(SAMPLES[Direction.DOWNSTREAM]["news.published"], event=event)
+    with pytest.raises(ValidationError):
+        validate(Direction.DOWNSTREAM, "news.published", body)
+
+
+def test_an_event_with_only_time_is_accepted():
+    body = dict(SAMPLES[Direction.DOWNSTREAM]["news.published"], event={"starts_at": "2026-08-12T18:00:00+03:00"})
+    assert validate(Direction.DOWNSTREAM, "news.published", body).event.place == ""
+
+
+def test_a_media_request_names_its_responsibles():
+    sample = SAMPLES[Direction.DOWNSTREAM]["media.request_created"]
+    request = validate(Direction.DOWNSTREAM, "media.request_created", sample)
+    assert request.responsibles == ["Иванова М. П.", "Ветров К. С., студент"]
+    assert request.entry == "Запись у воспитателя корпуса 8"
+
+    body = {k: v for k, v in sample.items() if k != "responsibles"}
+    assert validate(Direction.DOWNSTREAM, "media.request_created", body).responsibles == []
+    for responsibles in ([""], [LONG], ["Иванова М. П."] * (downstream.MAX_MEDIA_RESPONSIBLES + 1)):
+        with pytest.raises(ValidationError):
+            validate(Direction.DOWNSTREAM, "media.request_created", dict(sample, responsibles=responsibles))
+
+
+def test_media_request_answers_are_optional():
+    sample = SAMPLES[Direction.DOWNSTREAM]["media.request_created"]
+    body = {k: v for k, v in sample.items() if k not in {"what", "benefit", "format", "entry"}}
+    assert validate(Direction.DOWNSTREAM, "media.request_created", body).what == ""
+    with pytest.raises(ValidationError):
+        validate(Direction.DOWNSTREAM, "media.request_created", dict(sample, what="я" * 2001))
+
+
+def test_a_pass_has_up_to_five_kinship_docs():
+    sample = SAMPLES[Direction.UPSTREAM]["pass.submitted"]
+    body = {k: v for k, v in sample.items() if k != "kinship_docs"}
+    assert validate(Direction.UPSTREAM, "pass.submitted", body).kinship_docs == []
+    docs = [f"k{i}" for i in range(upstream.MAX_KINSHIP_DOCS)]
+    assert validate(Direction.UPSTREAM, "pass.submitted", dict(sample, kinship_docs=docs)).kinship_docs == docs
+    with pytest.raises(ValidationError):
+        validate(Direction.UPSTREAM, "pass.submitted", dict(sample, kinship_docs=[*docs, "k5"]))
+
+
+def test_the_yards_are_offered_for_new_tickets():
+    from campus_contracts.values import TICKET_SPOT_CHOICES, TICKET_SPOT_LABELS, TicketSpot
+
+    for spot in (TicketSpot.YARD_8_9, TicketSpot.YARD_11_12):
+        assert spot in TICKET_SPOT_CHOICES
+    assert TICKET_SPOT_LABELS[TicketSpot.YARD_8_9] == "двор между 8 и 9 корпусами"
+    assert TICKET_SPOT_LABELS[TicketSpot.YARD_11_12] == "двор между 11 и 12 корпусами"
+    ticket = validate(Direction.UPSTREAM, "ticket.created", SAMPLES[Direction.UPSTREAM]["ticket.created"])
+    assert ticket.spot is TicketSpot.YARD_8_9
+    assert ticket.building is None and ticket.floor is None
