@@ -471,6 +471,16 @@ class RoundPerson(Strict):
     #: «Отмечать не нужно» — общая метка, а не «заявление». Человек с ней в счёт
     #: «отмечено N из M» не идёт и кнопок не имеет.
     mark_required: bool = True
+    # Only ordinary residents receive this deadline. Duty/red-room exemptions have none.
+    statement_until: datetime | None = None
+
+    @field_validator("statement_until")
+    @classmethod
+    def statement_deadline_aware(cls, value):
+        if value is not None and value.tzinfo is None:
+            raise ValueError("statement_until requires a timezone")
+        return value
+
     #: Подпись к метке готовой строкой: «Заявление с 8 августа, 17:00 до 10
     #: августа, 20:00». Не причина и не диагноз.
     note: str | None = Field(default=None, max_length=200)
