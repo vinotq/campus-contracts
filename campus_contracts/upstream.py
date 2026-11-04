@@ -286,6 +286,7 @@ class DutyInstructionEdited(Strict):
 
 
 class MediaRequestStatusChanged(Strict):
+    reject_reason: str | None = Field(default=None, max_length=2000)
     request_ref: str = Field(min_length=1, max_length=64)
     status: MediaRequestStatus
     assignee: str | None = Field(default=None, max_length=200)
@@ -295,6 +296,12 @@ class MediaRequestStatusChanged(Strict):
     photos: list[Key] = Field(default_factory=list, max_length=MAX_MEDIA_PHOTOS)
     post_url: str | None = Field(default=None, max_length=500)
     changed_at: datetime
+
+    @model_validator(mode="after")
+    def rejection_has_reason(self) -> "MediaRequestStatusChanged":
+        if self.status == MediaRequestStatus.REJECTED and not (self.reject_reason or "").strip():
+            raise ValueError("для отклонения нужна причина")
+        return self
 
 
 class PostImageRef(Strict):
@@ -326,6 +333,12 @@ class PostReviewed(Strict):
     body_md: str = Field(max_length=100_000)
     images: list[PostImageRef] = Field(default_factory=list, max_length=MAX_POST_IMAGES)
     decided_at: datetime
+
+    @model_validator(mode="after")
+    def rejection_has_reason(self) -> "PostReviewed":
+        if self.verdict == PostVerdict.REJECTED and not (self.comment or "").strip():
+            raise ValueError("для отклонения нужна причина")
+        return self
 
 
 class PostEdited(Strict):

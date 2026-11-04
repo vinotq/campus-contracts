@@ -213,6 +213,7 @@ RESIDENT_RIGHTS = (
 
 
 class MediaRequestStatus(StrEnum):
+    REJECTED = "rejected"
     SENT = "sent"
     IN_WORK = "in_work"
     READY = "ready"
@@ -220,6 +221,7 @@ class MediaRequestStatus(StrEnum):
 
 
 class PostVerdict(StrEnum):
+    REJECTED = "rejected"
     APPROVED = "approved"
     REWORK = "rework"
 
