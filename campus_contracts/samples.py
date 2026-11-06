@@ -468,6 +468,11 @@ DOWNSTREAM["media.request_updated"] = {
     "changed_at": "2026-10-03T12:00:00+03:00",
 }
 
+UPSTREAM["post.read_stats"] = {
+    "observed_at": "2026-11-06T00:00:00+03:00",
+    "items": [{"post_ref": "7", "reads": 29, "audience_total": 791}],
+}
+
 SAMPLES = {
     Direction.DOWNSTREAM: DOWNSTREAM,
     Direction.UPSTREAM: UPSTREAM,

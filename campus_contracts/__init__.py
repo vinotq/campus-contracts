@@ -12,7 +12,7 @@
     if is_enforced(message_type):
         validate(Direction.DOWNSTREAM, message_type, payload)
 
-Разбор человеческой части — в `CONTRACT.md` этого же репозитория.
+Разбор человеческой части — в `docs/CONTRACT.md` этого же репозитория.
 """
 
 from enum import StrEnum
@@ -52,6 +52,7 @@ SCHEMAS = {
 #: Новый тип заводится сразу сюда. Тип вне этого списка отправляется без сверки
 #: — то есть ровно так, как обмен ломался до всей этой работы.
 ENFORCED = frozenset({
+    "post.read_stats",
     "profile.updated",
     "account.invited",
     "account.blocked",

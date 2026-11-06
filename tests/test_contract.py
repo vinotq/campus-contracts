@@ -176,6 +176,7 @@ def test_statuses_reject_foreign_values():
 #: распорядок. Люди внутри них лежат списком, и там ключ тот же самый,
 #: `aspirs_ref`.
 WITHOUT_PERSON = frozenset({
+    "post.read_stats",
     "message.stored",
     "home.layout",
     "round.roster",

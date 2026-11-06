@@ -7,7 +7,7 @@
 
 from datetime import date, datetime, time
 
-from pydantic import Field, model_validator
+from pydantic import AwareDatetime, Field, StrictInt, model_validator
 
 from campus_contracts.downstream import (
     MAX_CHAT_PHOTOS,
@@ -368,8 +368,33 @@ class MediaToFeed(Strict):
     request_revision: int | None = Field(default=None, ge=1)
 
 
+class PostReadCount(Strict):
+    post_ref: Key
+    reads: StrictInt = Field(ge=0)
+    audience_total: StrictInt = Field(ge=0)
+
+    @model_validator(mode="after")
+    def within_audience(self):
+        if self.reads > self.audience_total:
+            raise ValueError("reads exceeds audience")
+        return self
+
+
+class PostReadStats(Strict):
+    """Aggregate snapshot only. No resident IDs or individual read history."""
+    observed_at: AwareDatetime
+    items: list[PostReadCount] = Field(min_length=1, max_length=50)
+
+    @model_validator(mode="after")
+    def unique_posts(self):
+        if len({item.post_ref for item in self.items}) != len(self.items):
+            raise ValueError("duplicate post")
+        return self
+
+
 #: Тип сообщения → схема тела.
 SCHEMAS = {
+    "post.read_stats": PostReadStats,
     "ticket.created": TicketCreated,
     "ticket.withdrawn": TicketWithdrawn,
     "ticket.checked": TicketChecked,
