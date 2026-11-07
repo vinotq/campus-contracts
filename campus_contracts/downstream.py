@@ -64,6 +64,7 @@ class PostPublished(Strict):
     """
 
     aspirs_ref: str = Field(max_length=64)
+    media_draft_ref: Key | None = None
     kind: PostKind
     title: str = Field(min_length=1, max_length=300)
     #: Markdown, не HTML. Принимать HTML из внешней системы значит открыть XSS

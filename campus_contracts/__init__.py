@@ -127,6 +127,7 @@ ENFORCED = frozenset({
     "ticket.filed",
     "post.review_requested",
     "post.review_withdrawn",
+    "post.created",
     "post.reviewed",
     "post.edited",
     "media.to_feed",

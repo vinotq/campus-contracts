@@ -430,6 +430,13 @@ UPSTREAM = {
         "post_url": None,
         "changed_at": "2026-10-11T12:00:00+03:00",
     },
+    "post.created": {
+        "local_ref": "018f2c5e-0000-7000-8000-000000000051",
+        "title": "Новости Медиа", "body_md": "Новая публикация",
+        "images": [], "author_ref": "media-author", "author": "Автор Медиа",
+        "reviewer_ref": "media-reviewer", "reviewer": "Редактор Медиа",
+        "decided_at": "2026-11-07T12:00:00+03:00",
+    },
     "post.reviewed": {
         "post_ref": "412",
         "verdict": "approved",

@@ -6,6 +6,7 @@
 """
 
 from datetime import date, datetime, time
+from uuid import UUID
 
 from pydantic import AwareDatetime, Field, StrictInt, model_validator
 
@@ -320,6 +321,20 @@ class PostImageRef(Strict):
         return self
 
 
+class PostCreated(Strict):
+    """Самостоятельная публикация Медиа после согласования в кабинете."""
+
+    local_ref: UUID
+    title: str = Field(min_length=1, max_length=255)
+    body_md: str = Field(max_length=20_000)
+    images: list[PostImageRef] = Field(default_factory=list, max_length=MAX_POST_IMAGES)
+    author_ref: Key
+    author: str = Field(min_length=1, max_length=200)
+    reviewer_ref: Key
+    reviewer: str = Field(min_length=1, max_length=200)
+    decided_at: AwareDatetime
+
+
 class PostReviewed(Strict):
     """Решение редактора Медиа. Заголовок, текст и картинки едут итоговые."""
 
@@ -411,6 +426,7 @@ SCHEMAS = {
     "duty.instruction_edited": DutyInstructionEdited,
     "media.request_status_changed": MediaRequestStatusChanged,
     "media.to_feed": MediaToFeed,
+    "post.created": PostCreated,
     "post.reviewed": PostReviewed,
     "post.edited": PostEdited,
 }
